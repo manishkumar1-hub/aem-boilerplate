@@ -214,5 +214,39 @@
         "valueType": "string"
       }
     ]
+  },
+  {
+    "id": "quote",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "quoteText",
+        "label": "Quote"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "author",
+        "label": "Author"
+      }
+    ]
+  },
+  {
+    "id": "tabs",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "tabLabel",
+        "label": "Tab Label"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "tabContent",
+        "label": "Tab Content"
+      }
+    ]
   }
 ]

@@ -1,0 +1,31 @@
+.tabs-list {
+  display: flex;
+  gap: 8px;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 16px;
+}
+
+.tabs-tab {
+  padding: 10px 20px;
+  border: none;
+  background: none;
+  font-size: 16px;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.tabs-tab:hover {
+  color: #1473e6;
+}
+
+.tabs-tab[aria-selected="true"] {
+  border-bottom-color: #1473e6;
+  font-weight: 600;
+  color: #1473e6;
+}
+
+.tabs-panel {
+  padding: 8px 0;
+  line-height: 1.6;
+}

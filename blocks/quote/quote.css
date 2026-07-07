@@ -1,0 +1,21 @@
+.quote {
+  padding: 40px;
+  border-left: 4px solid #333;
+  background: #f7f7f7;
+}
+
+.quote-text {
+  font-size: 24px;
+  font-style: italic;
+  margin: 0 0 16px;
+}
+
+.quote-author {
+  font-size: 16px;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.quote-author::before {
+  content: '— ';
+}
