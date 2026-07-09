@@ -1,0 +1,20 @@
+.faq-sheet-loading {
+  color: #888;
+  font-style: italic;
+}
+
+.faq-sheet-item {
+  padding: 16px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.faq-sheet-question {
+  font-size: 18px;
+  margin: 0 0 8px;
+}
+
+.faq-sheet-answer {
+  margin: 0;
+  color: #444;
+  line-height: 1.6;
+}
