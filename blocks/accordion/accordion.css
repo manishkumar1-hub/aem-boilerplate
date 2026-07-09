@@ -1,0 +1,32 @@
+.accordion-item {
+  border-bottom: 1px solid #ddd;
+}
+
+.accordion-question {
+  width: 100%;
+  text-align: left;
+  padding: 16px 0;
+  border: none;
+  background: none;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.accordion-question::after {
+  content: '+';
+  font-size: 22px;
+  transition: transform 0.2s ease;
+}
+
+.accordion-question[aria-expanded="true"]::after {
+  transform: rotate(45deg);
+}
+
+.accordion-answer {
+  padding: 0 0 16px;
+  line-height: 1.6;
+}

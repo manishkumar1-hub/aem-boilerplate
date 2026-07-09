@@ -7,7 +7,6 @@ export default function decorate(block) {
   rows.forEach((row, i) => {
     const [labelDiv, contentDiv] = row.children;
     const label = labelDiv.textContent.trim();
-
     const button = document.createElement('button');
     button.className = 'tabs-tab';
     button.textContent = label;

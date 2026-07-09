@@ -1,38 +1,205 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="Content-Security-Policy"
-    content="script-src 'nonce-aem' 'strict-dynamic' 'unsafe-inline' http: https:; base-uri 'self'; object-src 'none';"
-    move-to-http-header="true">
-  <title>Block test</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script nonce="aem" src="/scripts/scripts.js" type="module"></script>
-  <link rel="stylesheet" href="/styles/styles.css">
-  <link rel="stylesheet" href="/styles/lazy-styles.css">
+    <meta charset="UTF-8">
+    <title>AEM Edge Delivery Services - Insights Blog Platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/styles.css">
+    <link rel="stylesheet" href="/blocks/quote/quote.css">
+    <link rel="stylesheet" href="/blocks/tabs/tabs.css">
+    <link rel="stylesheet" href="/blocks/accordion/accordion.css">
+    <link rel="stylesheet" href="/blocks/carousel/carousel.css">
+
+    <script type="module">
+        import decorateQuote from '/blocks/quote/quote.js';
+        import decorateTabs from '/blocks/tabs/tabs.js';
+        import decorateAccordion from '/blocks/accordion/accordion.js';
+        import decorateCarousel from '/blocks/carousel/carousel.js';
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.quote').forEach(el => {
+                try { decorateQuote(el); } catch (e) { console.warn(e); }
+            });
+            document.querySelectorAll('.tabs').forEach(el => {
+                try { decorateTabs(el); } catch (e) { console.warn(e); }
+            });
+            document.querySelectorAll('.accordion').forEach(el => {
+                try { decorateAccordion(el); } catch (e) { console.warn(e); }
+            });
+            document.querySelectorAll('.carousel').forEach(el => {
+                try { decorateCarousel(el); } catch (e) { console.warn(e); }
+            });
+        });
+    </script>
+    <style>
+        html, body, main, div {
+            opacity: 1 !important;
+            visibility: visible !important;
+            display: block !important;
+        }
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9 !important; padding: 20px; color: #333; }
+        .demo-container { max-width: 1100px; margin: 0 auto; }
+        .path-section { background: white !important; padding: 30px; margin-bottom: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .path-badge { display: inline-block !important; padding: 6px 12px; font-weight: bold; border-radius: 4px; font-size: 12px; margin-bottom: 15px; text-transform: uppercase; }
+        .badge-ue { background-color: #e3f2fd !important; color: #0d47a1 !important; }
+        .badge-doc { background-color: #e8f5e9 !important; color: #1b5e20 !important; }
+        h2 { margin-top: 0; color: #333; font-size: 26px; }
+        hr { border: 0; height: 1px; background: #eee; margin: 25px 0; display: block !important; }
+
+        .tabs [role="tablist"] { display: flex !important; }
+        .tabs-panel[hidden] { display: none !important; }
+        .accordion-answer[hidden] { display: none !important; }
+        .carousel-slide[hidden] { display: none !important; }
+
+        
+        .carousel {
+            position: relative !important;
+            height: 350px !important; /* Locks the layout height so it never blows up */
+            background-color: #1e293b !important; /* Beautiful dark slate enterprise tech theme */
+            border-radius: 8px !important;
+            overflow: hidden !important;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.2);
+        }
+        .carousel-track, .carousel-slide {
+            height: 100% !important;
+            position: relative;
+        }
+        .carousel img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain !important; /* Safely shrinks the image to fit entirely inside without cropping */
+            display: block !important;
+            padding: 20px 0; /* Gives your logo space to breathe */
+        }
+        /* Styling the caption so it sits clearly over the tech background */
+        .carousel-slide div:last-child, .carousel-caption {
+            position: absolute !important;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.85) !important; /* Clear readable backdrop */
+            color: #fff !important;
+            padding: 15px !important;
+            font-size: 14px !important;
+            text-align: center !important;
+            box-sizing: border-box;
+        }
+    </style>
 </head>
 <body>
-  <header></header>
- <main>
-  <div>
-    <div class="quote">
-      <div>This page is for Showing the Demo </div>
-      <div>Manish</div>
-    </div>
-  </div>
+    <div class="demo-container">
 
-  <div>
-    <div class="tabs">
-      <div>
-        <div>Overview</div>
-        <div><p>Content for the Overview Tab .</p></div>
-      </div>
-      <div>
-        <div>Pricing</div>
-        <div><p>Content for the pricing tab.</p></div>
-      </div>
+        <div class="path-section">
+            <span class="path-badge badge-doc">Path 1: Document Authoring (Google Doc Pipeline)</span>
+            <h2>Engineering High-Performance Web Platforms at Scale</h2>
+            <p style="color: #666; font-size: 14px;">Deep dive analysis into how modern decoupled content architectures maximize author velocity and stabilize core web vitals.</p>
+            <hr>
+
+            <!-- Blog Banner Carousel -->
+            <div class="carousel">
+                <div>
+                    <div><img src="/assets/slide1.jpg" alt="Slide 1"></div>
+                    <div>Achieve perfect 100/100 Google Lighthouse scores natively with zero-framework architectures.</div>
+                </div>
+                <div>
+                    <div><img src="/assets/slide2.jpg" alt="Slide 2"></div>
+                    <div>Empower non-technical authors to publish updates instantly via standard daily workspace applications.</div>
+                </div>
+            </div>
+
+            <br>
+
+            <!-- Leader Quote -->
+            <div class="quote">
+                <div><div>"Decoupling our structural content pipeline from front-end execution blocks represents the single largest milestone in our digital transformation road map."</div></div>
+                <div><div>Adobe, Principal Architecture Engineer</div></div>
+            </div>
+
+            <br>
+
+            <!-- Dynamic Tabs -->
+            <div class="tabs">
+                <div>
+                    <div>Performance Engine</div>
+                    <div>Optimizing LCP, INP, and CLS metrics out of the box by serving raw, pre-rendered semantic HTML trees direct from edge servers.</div>
+                </div>
+                <div>
+                    <div>Global Scalability</div>
+                    <div>Distributing lightning-fast customer layouts across a distributed global CDN, entirely free from old-school relational database query bottlenecks.</div>
+                </div>
+            </div>
+
+            <br>
+
+            <!-- FAQ Accordion -->
+            <div class="accordion">
+                <div>
+                    <div>Why does EDS prioritize lightweight vanilla JavaScript over heavy frameworks?</div>
+                    <div><p>Frameworks force mobile browsers to download heavy processing scripts before showing a single pixel. Vanilla block decorators transform markup instantly on load, protecting device battery life and search engine visibility.</p></div>
+                </div>
+                <div>
+                    <div>How does instrumentation protect our enterprise design standards?</div>
+                    <div><p>By writing strict component JSON properties, we establish strict design boundaries. Content authors gain absolute visual editing freedoms on the canvas without ever risking breaking global styling rules.</p></div>
+                </div>
+            </div>
+        </div>
+
+       
+        <div class="path-section">
+            <span class="path-badge badge-ue">Path 2: Universal Editor (Headless JSON Stream)</span>
+            <h2>Engineering High-Performance Web Platforms at Scale</h2>
+            <p style="color: #666; font-size: 14px;">Deep dive analysis into how modern decoupled content architectures maximize author velocity and stabilize core web vitals.</p>
+            <hr>
+
+            <!-- Blog Banner Carousel -->
+            <div class="carousel">
+                <div>
+                    <div><img src="/assets/slide1.jpg" alt="Slide 1"></div>
+                    <div>Achieve perfect 100/100 Google Lighthouse scores natively with zero-framework architectures.</div>
+                </div>
+                <div>
+                    <div><img src="/assets/slide2.jpg" alt="Slide 2"></div>
+                    <div>Empower non-technical authors to publish updates instantly via standard daily workspace applications.</div>
+                </div>
+            </div>
+
+            <br>
+
+            <!-- Leader Quote -->
+            <div class="quote">
+                <div>"Decoupling our structural content pipeline from front-end execution blocks represents the single largest milestone in our digital transformation road map."</div>
+                <div>Adobe, Principal Architecture Engineer</div>
+            </div>
+
+            <br>
+
+            <!-- Dynamic Tabs -->
+            <div class="tabs">
+                <div>
+                    <div>Performance Engine</div>
+                    <div><p>Optimizing LCP, INP, and CLS metrics out of the box by serving raw, pre-rendered semantic HTML trees direct from edge servers.</p></div>
+                </div>
+                <div>
+                    <div>Global Scalability</div>
+                    <div><p>Distributing lightning-fast customer layouts across a distributed global CDN, entirely free from old-school relational database query bottlenecks.</p></div>
+                </div>
+            </div>
+
+            <br>
+
+            <!-- FAQ Accordion -->
+            <div class="accordion">
+                <div>
+                    <div>Why does EDS prioritize lightweight vanilla JavaScript over heavy frameworks?</div>
+                    <div><p>Frameworks force mobile browsers to download heavy processing scripts before showing a single pixel. Vanilla block decorators transform markup instantly on load, protecting device battery life and search engine visibility.</p></div>
+                </div>
+                <div>
+                    <div>How does instrumentation protect our enterprise design standards?</div>
+                    <div><p>By writing strict component JSON properties, we establish strict design boundaries. Content authors gain absolute visual editing freedoms on the canvas without ever risking breaking global styling rules.</p></div>
+                </div>
+            </div>
+        </div>
+
     </div>
-  </main>
-</main>
-  <footer></footer>
 </body>
 </html>

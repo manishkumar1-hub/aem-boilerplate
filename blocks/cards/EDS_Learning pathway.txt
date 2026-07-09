@@ -1,0 +1,60 @@
+🕒 The Daily 8-Hour "No-Disturbance" Blueprint
+To make sure you retain the information and can explain it confidently under pressure, divide your 8-hour workday into these four strict blocks:
+
+Block 1: Technical Theory & System Spec (2 Hours) — Deep dive into the architectural mechanics. Understand why Adobe built it this way.
+
+Block 2: Active Hands-On Coding (4 Hours) — Write the JSON configurations, add HTML instrumentation tags, and break/fix things inside your local test.html setup.
+
+Block 3: Performance, Speed & Core Web Vitals (1 Hour) — Learn how EDS achieves a perfect 100/100 Google Lighthouse score. This is a favorite interview topic.
+
+Block 4: Verbal Interview Drills (1 Hour) — Close your laptop screen and practice explaining the workflows out loud as if answering an interviewer.
+
+🎯 The In-Depth Interview Core Topics
+1. High-Performance Architecture (The 3 Buses)
+You must be able to draw and explain how EDS delivers content without a traditional heavy database.
+
+The Concepts: Learn the difference between the Code Bus (reads JS/CSS live from GitHub), the Content Bus (reads text from Google Docs/AEM fragments), and the Media Bus (optimizes and delivers binary images/videos via unique immutable hashes).
+
+Interview Question: "What happens when a user requests an EDS page?" * Your Answer: The edge CDN instantly stitches the static content HTML together with the lightweight JS block files loaded directly from GitHub, delivering a pre-rendered, vanilla-JS page to the browser in milliseconds.
+
+2. DOM Manipulation & Block Ingestion
+Interviewers will test your raw vanilla JavaScript skills because EDS does not use React or Angular.
+
+The Concepts: Master how scripts.js runs a radar sweep over the page, identifying matching class selectors and executing block decorators. Understand how to safely extract text content using .textContent.trim() and how to write protective try...catch blocks.
+
+Interview Question: "Why does AEM EDS prioritize vanilla JavaScript over a modern framework like React?"
+
+Your Answer: Frameworks require the browser to download heavy JavaScript libraries before rendering the page, slowing down mobile devices. EDS uses semantic HTML structures and lightweight vanilla JavaScript blocks to guarantee optimal Core Web Vitals (LCP, INP, CLS) out of the box.
+
+3. Universal Editor (UE) Instrumentation
+Since your company is focusing heavily on the Universal Editor, this section is critical.
+
+The Concepts: Learn how to build the side-panel editing forms using component-models.json and connect those fields to your actual code directories using xwalk.json. Master the HTML data attributes that unlock the visual canvas elements:
+
+data-aue-component: Lights up a blue selection rectangle over the element on-screen.
+
+data-aue-prop: Identifies the exact field being updated.
+
+data-aue-type: Defines the element data type (e.g., text, media, richtext).
+
+4. Spreadsheets as APIs & Indexing
+The Concepts: Learn how EDS translates a basic Google Sheet or Excel table directly into a fast, public headless JSON dataset. Understand how helix-query.yaml instructs Adobe’s backend to index hundreds of pages into a single queryable spreadsheet block.
+
+Interview Question: "How would you build a dynamic 'Recent Blog Posts' component in EDS?"
+
+Your Answer: I would instruct authors to publish articles normally. I'd configure helix-query.yaml to auto-index those pages into a public query-index.json sheet, and then write a custom JavaScript block that fetches that JSON file to render the latest blog cards dynamically.
+
+📚 Your Active Verification Resource Links
+To ensure you face absolutely zero disturbances or broken information, use only these verified official reference paths:
+
+Core Developer Technical Reference
+The standalone engineering home for setting up block collections, sitemaps, semantic section markup, and spreadsheet query endpoints.
+👉 Link: AEM.live Official Build Documentation
+
+Comprehensive Architecture Blueprint
+The official architectural deep dive explaining caching layers, CDN setups, push invalidations, and the lifecycle of preview vs. publish environments.
+👉 Link: AEM.live System Architecture Guide
+
+Universal Editor Implementation & Code Lab
+The hands-on tutorial from Adobe Experience League showing developers how to enable cross-origin iframe setups and map properties panels to code components.
+👉 Link: Adobe Universal Editor Developer Onboarding Guide
