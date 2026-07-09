@@ -288,6 +288,23 @@
     ]
   },
   {
+    "id": "stat-item",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "number",
+        "name": "value",
+        "label": "Number"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "label",
+        "label": "Label"
+      }
+    ]
+  },
+  {
     "id": "tabs",
     "fields": [
       {

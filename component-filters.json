@@ -50,5 +50,11 @@
       "button",
       "title"
     ]
+  },
+  {
+    "id": "stats",
+    "components": [
+      "stat-item"
+    ]
   }
 ]
