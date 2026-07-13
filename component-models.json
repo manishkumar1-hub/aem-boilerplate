@@ -320,5 +320,38 @@
         "label": "Tab Content"
       }
     ]
+  },
+  {
+    "id": "testimonial-item",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "quote",
+        "value": "",
+        "label": "Quote",
+        "valueType": "string"
+      },
+      {
+        "component": "text-input",
+        "name": "authorName",
+        "value": "",
+        "label": "Author Name",
+        "valueType": "string"
+      },
+      {
+        "component": "text-input",
+        "name": "authorRole",
+        "value": "",
+        "label": "Author Role / Company",
+        "valueType": "string"
+      },
+      {
+        "component": "reference",
+        "name": "avatar",
+        "label": "Avatar Image",
+        "valueType": "string",
+        "multi": false
+      }
+    ]
   }
 ]

@@ -15,7 +15,8 @@
       "hero",
       "cards",
       "columns",
-      "fragment"
+      "fragment",
+      "testimonial-carousel"
     ]
   },
   {
@@ -55,6 +56,12 @@
     "id": "stats",
     "components": [
       "stat-item"
+    ]
+  },
+  {
+    "id": "testimonial-carousel",
+    "components": [
+      "testimonial-item"
     ]
   }
 ]
