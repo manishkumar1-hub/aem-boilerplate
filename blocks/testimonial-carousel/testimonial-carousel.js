@@ -1,31 +1,22 @@
 export default function decorate(block) {
-  const slides = [...block.children];
-
-  const track = document.createElement('div');
-  track.className = 'testimonial-carousel-track';
+  const slides = [...block.children]; // each child = one testimonial row
 
   slides.forEach((row, i) => {
     row.classList.add('testimonial-slide');
-    if (i !== 0) row.setAttribute('aria-hidden', 'true');
-    track.appendChild(row);
+    const cells = [...row.children]; // [0] = text cell, [1] = image cell
+    cells[0]?.classList.add('testimonial-content');
+    cells[1]?.classList.add('testimonial-avatar');
+    if (i !== 0) row.style.display = 'none';
   });
-
-  block.textContent = '';
-  block.appendChild(track);
 
   const nav = document.createElement('div');
   nav.className = 'testimonial-carousel-nav';
-
   const prevBtn = document.createElement('button');
-  prevBtn.className = 'testimonial-carousel-prev';
-  prevBtn.setAttribute('aria-label', 'Previous testimonial');
   prevBtn.textContent = '‹';
-
+  prevBtn.setAttribute('aria-label', 'Previous testimonial');
   const nextBtn = document.createElement('button');
-  nextBtn.className = 'testimonial-carousel-next';
-  nextBtn.setAttribute('aria-label', 'Next testimonial');
   nextBtn.textContent = '›';
-
+  nextBtn.setAttribute('aria-label', 'Next testimonial');
   nav.append(prevBtn, nextBtn);
   block.appendChild(nav);
 
@@ -35,12 +26,9 @@ export default function decorate(block) {
     current = (index + total) % total;
     slides.forEach((slide, i) => {
       slide.style.display = i === current ? '' : 'none';
-      slide.setAttribute('aria-hidden', i === current ? 'false' : 'true');
     });
   };
 
   prevBtn.addEventListener('click', () => showSlide(current - 1));
   nextBtn.addEventListener('click', () => showSlide(current + 1));
-
-  showSlide(0);
 }
