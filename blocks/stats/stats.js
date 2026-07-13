@@ -26,7 +26,7 @@ export default function decorate(block) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          animateCount(numberEl, targetValue);
+            animateCount(numberEl, targetValue);
           observer.unobserve(entry.target);
         }
       });
