@@ -15,7 +15,6 @@ export default function decorate(block) {
     roleEl?.classList.add('testimonial-role');
     avatarEl?.classList.add('testimonial-avatar');
 
-    // Fix: reach into the actual <img>, not just the wrapper div, for alt text
     const imgEl = avatarEl?.querySelector('img');
     if (imgEl && nameEl) {
       imgEl.alt = `Photo of ${nameEl.textContent.trim()}`;
