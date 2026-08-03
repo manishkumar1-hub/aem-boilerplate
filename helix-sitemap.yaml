@@ -1,12 +1,5 @@
 sitemaps:
   example:
-    languages:
-      en:
-        source: /en/query-index.json
-        destination: /sitemap-en.xml
-        hreflang: en
-      fr:
-        source: /fr/query-index.json
-        destination: /sitemap-fr.xml
-        hreflang: fr
-        alternate: /fr/{path}
+    source: /query-index.json
+    destination: /sitemap-en.
+    

@@ -1,4 +1,5 @@
 import {
+  buildBlock,
   loadHeader,
   loadFooter,
   decorateIcons,
@@ -12,7 +13,7 @@ import {
 } from './aem.js';
 
 /**
- * Moves all the attributes from a given elmenet to another given element.
+ * Moves all the attributes from a given element to another given element.
  * @param {Element} from the element to copy attributes from
  * @param {Element} to the element to copy attributes to
  */
@@ -58,12 +59,27 @@ async function loadFonts() {
 }
 
 /**
+ * Automatically converts standalone YouTube links into embed blocks.
+ * @param {Element} main The main container element
+ */
+function buildEmbedBlocks(main) {
+  main.querySelectorAll('a[href*="youtube.com"], a[href*="youtu.be"]').forEach((a) => {
+    const parent = a.closest('p, h1, h2, h3, h4, h5, h6');
+    if (parent) {
+      // Create an 'embed' block containing the link element
+      const embedBlock = buildBlock('embed', [[a.cloneNode(true)]]);
+      parent.replaceWith(embedBlock);
+    }
+  });
+}
+
+/**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
  */
-function buildAutoBlocks() {
+function buildAutoBlocks(main) {
   try {
-    // TODO: add auto block, if needed
+    buildEmbedBlocks(main); // <-- Call YouTube auto-blocker
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
