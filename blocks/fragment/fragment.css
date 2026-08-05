@@ -1,25 +1,70 @@
-/* Fragment Block - Centered Layout & Constrained Width */
+/* stylelint-disable no-empty-source */
+/* ==========================================================================
+   EDS Fragment Block - Centered Layout & Constrained Width
+   ========================================================================== */
+
+/* Main Fragment Wrapper - Centered & Width Constrained */
 .fragment {
-  max-width: 700px;
-  margin: 2rem auto; /* 'auto' centers the block horizontally */
+  max-width: 650px;
+  margin: 2.5rem auto !important; /* 'auto' forces horizontal centering */
   padding: 1.5rem;
   text-align: center;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
-.fragment img {
+/* Reset inner section margins when loaded inside a fragment */
+.fragment .section {
+  padding: 0;
+  margin: 0;
+}
+
+/* Centered & Responsive Images inside Fragments */
+.fragment img,
+.fragment picture {
   max-width: 100%;
   height: auto;
-  margin: 1rem auto;
   display: block;
+  margin: 1rem auto;
   border-radius: 8px;
 }
 
-.fragment h1, 
-.fragment h2 {
-  margin-top: 1rem;
+/* Centered Headings inside Fragments */
+.fragment h1,
+.fragment h2,
+.fragment h3 {
   text-align: center;
+  margin-top: 1rem;
+  margin-bottom: 0.75rem;
+  color: #111111;
 }
 
+/* Centered Description Text */
 .fragment p {
   text-align: center;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+  color: #333333;
+}
+
+/* Centered Primary CTA Button */
+.fragment a.button,
+.fragment p a {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  background-color: #0066cc;
+  color: #ffffff !important;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.fragment a.button:hover,
+.fragment p a:hover {
+  background-color: #004b99;
+  transform: translateY(-1px);
 }
