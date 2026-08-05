@@ -1,24 +1,25 @@
-/* stylelint-disable no-empty-source */
-/* Fragment Block Styles */
-.fragment-wrapper {
-  margin: 2rem 0;
-  width: 100%;
-}
-
-.section.highlight.dark {
-  background-color: #1a1a1a;
-  color: #ffffff;
-  padding: 2rem;
-  border-radius: 8px;
+/* Fragment Block - Centered Layout & Constrained Width */
+.fragment {
+  max-width: 700px;
+  margin: 2rem auto; /* 'auto' centers the block horizontally */
+  padding: 1.5rem;
   text-align: center;
 }
 
-.section.highlight.dark a.button {
-  background-color: #0066cc;
-  color: #ffffff;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
-  text-decoration: none;
-  display: inline-block;
+.fragment img {
+  max-width: 100%;
+  height: auto;
+  margin: 1rem auto;
+  display: block;
+  border-radius: 8px;
+}
+
+.fragment h1, 
+.fragment h2 {
   margin-top: 1rem;
+  text-align: center;
+}
+
+.fragment p {
+  text-align: center;
 }

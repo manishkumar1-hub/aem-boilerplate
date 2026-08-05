@@ -1,11 +1,14 @@
+/* Embed Block - Centered Layout & Constrained Width */
 .embed {
-  margin: 2rem 0;
-  width: 100%;
-  max-width: 800px;
+  max-width: 700px;
+  margin: 2rem auto; /* 'auto' centers the block horizontally */
+  display: flex;
+  justify-content: center;
 }
 
 .embed-youtube-wrapper {
-  border-radius: 8px;
+  width: 100%;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
 }
