@@ -19,14 +19,44 @@ import {
  * @returns {HTMLElement} The root element of the fragment
  */
 export async function loadFragment(path) {
+  if (!path) return null;
+
+  // Convert full URLs (e.g., https://main--.../fragments/diwali-offer) into relative paths (/fragments/diwali-offer)
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    const url = new URL(path);
+    path = url.pathname;
+  }
+
   if (path && path.startsWith('/') && !path.startsWith('//')) {
-    // === RECURSION GUARD (ADDED FOR ARCHITECT LEVEL SAFETY) ===
-    window.fetchedFragments = window.fetchedFragments || new Set();
-    if (window.fetchedFragments.has(path)) {
-      console.warn(`[EDS Fragment] Circular dependency detected for path: ${path}`);
-      return null;
+    path = path.replace(/(\.plain)?\.html/, '');
+    const resp = await fetch(`${path}.plain.html`);
+    if (resp.ok) {
+      const main = document.createElement('main');
+      main.innerHTML = await resp.text();
+
+      // reset base path for media to fragment base
+      const resetAttributeBase = (tag, attr) => {
+        main.querySelectorAll(`${tag}[${attr}^="./media_"]`).forEach((elem) => {
+          elem[attr] = new URL(elem.getAttribute(attr), new URL(path, window.location)).href;
+        });
+      };
+      resetAttributeBase('img', 'src');
+      resetAttributeBase('source', 'srcset');
+
+      decorateMain(main);
+      await loadSections(main);
+      return main;
     }
-    window.fetchedFragments.add(path);
+  }
+  return null;
+}
+
+export default async function decorate(block) {
+  const link = block.querySelector('a');
+  const path = link ? link.getAttribute('href') : block.textContent.trim();
+  const fragment = await loadFragment(path);
+  if (fragment) block.replaceChildren(...fragment.childNodes);
+}
     // ==========================================================
 
     // eslint-disable-next-line no-param-reassign
