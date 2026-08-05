@@ -22,14 +22,15 @@ export async function loadFragment(path) {
   if (!path) return null;
 
   // Convert full URLs (e.g., https://main--.../fragments/diwali-offer) into relative paths (/fragments/diwali-offer)
-  if (path.startsWith('http://') || path.startsWith('https://')) {
-    const url = new URL(path);
-    path = url.pathname;
+  let cleanPath = path;
+  if (cleanPath.startsWith('http://') || cleanPath.startsWith('https://')) {
+    const url = new URL(cleanPath);
+    cleanPath = url.pathname;
   }
 
-  if (path && path.startsWith('/') && !path.startsWith('//')) {
-    path = path.replace(/(\.plain)?\.html/, '');
-    const resp = await fetch(`${path}.plain.html`);
+  if (cleanPath && cleanPath.startsWith('/') && !cleanPath.startsWith('//')) {
+    cleanPath = cleanPath.replace(/(\.plain)?\.html/, '');
+    const resp = await fetch(`${cleanPath}.plain.html`);
     if (resp.ok) {
       const main = document.createElement('main');
       main.innerHTML = await resp.text();
@@ -37,39 +38,7 @@ export async function loadFragment(path) {
       // reset base path for media to fragment base
       const resetAttributeBase = (tag, attr) => {
         main.querySelectorAll(`${tag}[${attr}^="./media_"]`).forEach((elem) => {
-          elem[attr] = new URL(elem.getAttribute(attr), new URL(path, window.location)).href;
-        });
-      };
-      resetAttributeBase('img', 'src');
-      resetAttributeBase('source', 'srcset');
-
-      decorateMain(main);
-      await loadSections(main);
-      return main;
-    }
-  }
-  return null;
-}
-
-export default async function decorate(block) {
-  const link = block.querySelector('a');
-  const path = link ? link.getAttribute('href') : block.textContent.trim();
-  const fragment = await loadFragment(path);
-  if (fragment) block.replaceChildren(...fragment.childNodes);
-}
-    // ==========================================================
-
-    // eslint-disable-next-line no-param-reassign
-    path = path.replace(/(\.plain)?\.html/, '');
-    const resp = await fetch(`${path}.plain.html`);
-    if (resp.ok) {
-      const main = document.createElement('main');
-      main.innerHTML = await resp.text();
-
-      // reset base path for media to fragment base
-      const resetAttributeBase = (tag, attr) => {
-        main.querySelectorAll(`${tag}[${attr}^="./media_"]`).forEach((elem) => {
-          elem[attr] = new URL(elem.getAttribute(attr), new URL(path, window.location)).href;
+          elem[attr] = new URL(elem.getAttribute(attr), new URL(cleanPath, window.location)).href;
         });
       };
       resetAttributeBase('img', 'src');
