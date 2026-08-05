@@ -20,6 +20,15 @@ import {
  */
 export async function loadFragment(path) {
   if (path && path.startsWith('/') && !path.startsWith('//')) {
+    // === RECURSION GUARD (ADDED FOR ARCHITECT LEVEL SAFETY) ===
+    window.fetchedFragments = window.fetchedFragments || new Set();
+    if (window.fetchedFragments.has(path)) {
+      console.warn(`[EDS Fragment] Circular dependency detected for path: ${path}`);
+      return null;
+    }
+    window.fetchedFragments.add(path);
+    // ==========================================================
+
     // eslint-disable-next-line no-param-reassign
     path = path.replace(/(\.plain)?\.html/, '');
     const resp = await fetch(`${path}.plain.html`);

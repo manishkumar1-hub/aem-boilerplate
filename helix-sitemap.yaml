@@ -1,4 +1,5 @@
 sitemaps:
-  default:
+  example:
     source: /query-index.json
-    destination: /sitemap.xml
+    destination: /sitemap-en.xml
+    
