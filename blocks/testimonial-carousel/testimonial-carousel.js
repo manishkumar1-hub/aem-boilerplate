@@ -1,3 +1,5 @@
+import { sampleRUM } from '../../scripts/aem.js';
+
 export default function decorate(block) {
   // Make the whole carousel announce content changes to screen readers
   block.setAttribute('aria-live', 'polite');
@@ -42,18 +44,41 @@ export default function decorate(block) {
   nav.append(prevBtn, nextBtn);
   block.appendChild(nav);
 
-  // Slide-switching logic
+  // Slide-switching logic with Telemetry Tracking
   let current = 0;
-  const showSlide = (index) => {
+  const showSlide = (index, direction = 'next') => {
     const total = slides.length;
     current = (index + total) % total; // wraps around at either end
+
     slides.forEach((slide, i) => {
       const isActive = i === current;
       slide.style.display = isActive ? '' : 'none';
       slide.setAttribute('aria-hidden', isActive ? 'false' : 'true');
     });
+
+    // 1. Send Custom Interaction Event to Google Analytics 4 (if loaded)
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'carousel_navigation', {
+        event_category: 'Block Interaction',
+        event_label: `Testimonial Carousel ${direction}`,
+        slide_index: current + 1,
+        total_slides: total,
+      });
+    }
+
+    // 2. Send Custom EDS RUM Checkpoint
+    sampleRUM('carousel-slide-change', {
+      source: 'testimonial-carousel',
+      target: `${direction}:${current + 1}`,
+    });
   };
 
-  prevBtn.addEventListener('click', () => showSlide(current - 1));
-  nextBtn.addEventListener('click', () => showSlide(current + 1));
+  prevBtn.addEventListener('click', () => showSlide(current - 1, 'prev'));
+  nextBtn.addEventListener('click', () => showSlide(current + 1, 'next'));
+
+  // 3. Emit RUM checkpoint when block hydration completes
+  sampleRUM('testimonial-carousel-hydrated', {
+    source: 'testimonial-carousel',
+    target: block,
+  });
 }
