@@ -1,22 +1,15 @@
 /* eslint-disable */
-/**
- * Product Details Block (PDP)
- * Renders complete product gallery, pricing, variant options, and Add to Cart action.
- */
 export default async function decorate(block) {
-  // Extract SKU from Google Doc table or fallback
   const skuElement = block.querySelector('div > div');
   const sku = skuElement ? skuElement.textContent.trim() : 'VA01-BLACK';
 
-  // Clear raw table markup
   block.innerHTML = '';
 
-  // Create PDP UI Container
   const pdpWrapper = document.createElement('div');
   pdpWrapper.className = 'pdp-wrapper';
   pdpWrapper.innerHTML = `
     <div class="pdp-gallery">
-      <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=700&auto=format&fit=crop" alt="Nike Air Max Enterprise Edition" />
+      <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=700&auto=format&fit=crop" alt="Nike Air Max" />
     </div>
     <div class="pdp-info">
       <span class="pdp-badge">In Stock</span>
@@ -31,7 +24,6 @@ export default async function decorate(block) {
         Engineered specifically for high-performance Edge Delivery Services workflows. Features 100/100 Lighthouse score cushioning and zero-framework agility.
       </p>
 
-      <!-- Variant Selectors -->
       <div class="pdp-options">
         <label>Select Size (US):</label>
         <div class="size-options">
@@ -42,7 +34,6 @@ export default async function decorate(block) {
         </div>
       </div>
 
-      <!-- Actions -->
       <div class="pdp-actions">
         <button id="add-to-cart-btn" class="pdp-cart-btn">Add to Cart 🛒</button>
       </div>
@@ -51,7 +42,6 @@ export default async function decorate(block) {
 
   block.appendChild(pdpWrapper);
 
-  // Interactive Size Selection
   const sizeBtns = block.querySelectorAll('.size-btn');
   sizeBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -60,7 +50,6 @@ export default async function decorate(block) {
     });
   });
 
-  // Interactive Add to Cart Behavior
   const cartBtn = block.querySelector('#add-to-cart-btn');
   cartBtn?.addEventListener('click', () => {
     cartBtn.textContent = 'Added to Cart! ✓';

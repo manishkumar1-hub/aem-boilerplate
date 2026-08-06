@@ -1,4 +1,3 @@
-import { initCommerce } from './commerce.js';
 import {
   buildBlock,
   loadHeader,
@@ -181,7 +180,6 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
-  initCommerce();
 }
 
 /**
