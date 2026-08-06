@@ -1,3 +1,4 @@
+import { initCommerce } from './commerce.js';
 import {
   buildBlock,
   loadHeader,
@@ -10,7 +11,9 @@ import {
   loadSection,
   loadSections,
   loadCSS,
+
 } from './aem.js';
+
 
 /**
  * Moves all the attributes from a given element to another given element.
@@ -180,6 +183,7 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+  initCommerce();
 }
 
 /**

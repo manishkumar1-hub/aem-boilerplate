@@ -142,23 +142,6 @@
     ]
   },
   {
-    "id": "accordion-item",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "question",
-        "label": "Question"
-      },
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "answer",
-        "label": "Answer"
-      }
-    ]
-  },
-  {
     "id": "card",
     "fields": [
       {
@@ -174,44 +157,6 @@
         "value": "",
         "label": "Text",
         "valueType": "string"
-      }
-    ]
-  },
-  {
-    "id": "carousel",
-    "fields": [
-      {
-        "component": "select",
-        "name": "autoplay",
-        "label": "Autoplay",
-        "options": [
-          {
-            "name": "Off",
-            "value": ""
-          },
-          {
-            "name": "On",
-            "value": "autoplay"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "carousel-slide",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "image",
-        "label": "Slide Image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "caption",
-        "label": "Caption"
       }
     ]
   },
@@ -254,6 +199,7 @@
         "label": "Image",
         "multi": false
       },
+      
       {
         "component": "text",
         "valueType": "string",
@@ -268,90 +214,8 @@
         "label": "Text",
         "valueType": "string"
       }
-    ]
-  },
-  {
-    "id": "quote",
-    "fields": [
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "quoteText",
-        "label": "Quote"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "author",
-        "label": "Author"
-      }
-    ]
-  },
-  {
-    "id": "stat-item",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "number",
-        "name": "value",
-        "label": "Number"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "label",
-        "label": "Label"
-      }
-    ]
-  },
-  {
-    "id": "tabs",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "tabLabel",
-        "label": "Tab Label"
-      },
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "tabContent",
-        "label": "Tab Content"
-      }
-    ]
-  },
-  {
-    "id": "testimonial-item",
-    "fields": [
-      {
-        "component": "richtext",
-        "name": "quote",
-        "value": "",
-        "label": "Quote",
-        "valueType": "string"
-      },
-      {
-        "component": "text-input",
-        "name": "authorName",
-        "value": "",
-        "label": "Author Name",
-        "valueType": "string"
-      },
-      {
-        "component": "text-input",
-        "name": "authorRole",
-        "value": "",
-        "label": "Author Role / Company",
-        "valueType": "string"
-      },
-      {
-        "component": "reference",
-        "name": "avatar",
-        "label": "Avatar Image",
-        "valueType": "string",
-        "multi": false
-      }
+      
     ]
   }
+  
 ]
