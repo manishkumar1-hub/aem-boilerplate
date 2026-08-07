@@ -1,8 +1,63 @@
+/* eslint-disable */
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
+
+// Global cart item counter
+let cartCount = 0;
+
+/**
+ * Sets up the Mini-Cart Badge in the header and subscribes to global cart events.
+ * @param {Element} nav The nav container element
+ */
+function setupMiniCart(nav) {
+  // Find or fallback to the nav-tools container (.nav-tools)
+  let tools = nav.querySelector('.nav-tools');
+  if (!tools) {
+    tools = document.createElement('div');
+    tools.className = 'nav-tools';
+    nav.append(tools);
+  }
+
+  // Create Mini-Cart Badge Element
+  const cartBadge = document.createElement('div');
+  cartBadge.className = 'mini-cart-badge';
+  cartBadge.style.cssText = `
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #111;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-left: auto;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  `;
+  cartBadge.innerHTML = `🛒 Cart (<span id="cart-count">0</span>)`;
+  tools.append(cartBadge);
+
+  // Subscribe to Global Event Bus ('cart:add')
+  window.addEventListener('cart:add', () => {
+    cartCount += 1;
+    const countElement = cartBadge.querySelector('#cart-count');
+    if (countElement) {
+      countElement.textContent = cartCount;
+    }
+
+    // Visual pulse effect when item is added
+    cartBadge.style.transform = 'scale(1.15)';
+    cartBadge.style.backgroundColor = '#0066cc';
+    setTimeout(() => {
+      cartBadge.style.transform = 'scale(1)';
+      cartBadge.style.backgroundColor = '#111';
+    }, 300);
+  });
+}
 
 function closeOnEscape(e) {
   if (e.code === 'Escape') {
@@ -131,7 +186,7 @@ export default async function decorate(block) {
   });
 
   const navBrand = nav.querySelector('.nav-brand');
-  const brandLink = navBrand.querySelector('.button');
+  const brandLink = navBrand?.querySelector('.button');
   if (brandLink) {
     brandLink.className = '';
     brandLink.closest('.button-container').className = '';
@@ -150,6 +205,9 @@ export default async function decorate(block) {
       });
     });
   }
+
+  // Setup Mini-Cart Badge & Event Bus listener
+  setupMiniCart(nav);
 
   // hamburger for mobile
   const hamburger = document.createElement('div');

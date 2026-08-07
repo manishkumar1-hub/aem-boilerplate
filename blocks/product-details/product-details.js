@@ -1,4 +1,8 @@
 /* eslint-disable */
+/**
+ * Product Details Block (PDP)
+ * Emits global 'cart:add' event when items are added.
+ */
 export default async function decorate(block) {
   const skuElement = block.querySelector('div > div');
   const sku = skuElement ? skuElement.textContent.trim() : 'VA01-BLACK';
@@ -42,21 +46,37 @@ export default async function decorate(block) {
 
   block.appendChild(pdpWrapper);
 
+  // Size Selector Logic
+  let selectedSize = '9';
   const sizeBtns = block.querySelectorAll('.size-btn');
   sizeBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       sizeBtns.forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
+      selectedSize = btn.textContent.trim();
     });
   });
 
+  // Add to Cart + Event Bus Emission
   const cartBtn = block.querySelector('#add-to-cart-btn');
   cartBtn?.addEventListener('click', () => {
+    // 1. Visual Button Feedback
     cartBtn.textContent = 'Added to Cart! ✓';
     cartBtn.style.backgroundColor = '#2e7d32';
     setTimeout(() => {
       cartBtn.textContent = 'Add to Cart 🛒';
       cartBtn.style.backgroundColor = '';
     }, 2000);
+
+    // 2. Publish Event to Global Event Bus
+    const event = new CustomEvent('cart:add', {
+      detail: {
+        sku,
+        size: selectedSize,
+        price: 149.99,
+        timestamp: Date.now(),
+      },
+    });
+    window.dispatchEvent(event);
   });
 }
