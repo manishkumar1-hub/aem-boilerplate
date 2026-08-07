@@ -376,3 +376,25 @@ main .section.light-bg ul {
   line-height: 1.8;
   font-size: 1.05rem;
 }
+/* ==========================================================================
+   Auto-Blocked Announcement Banner (EDS #15)
+   ========================================================================== */
+
+main .announcement-wrapper {
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+main .announcement {
+  background: linear-gradient(90deg, #ff4e50 0%, #f9d423 100%);
+  color: #111111;
+  text-align: center;
+  padding: 0.75rem 1rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+main .announcement p {
+  margin: 0;
+}

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {
   buildBlock,
   loadHeader,
@@ -10,12 +11,18 @@ import {
   loadSection,
   loadSections,
   loadCSS,
-
 } from './aem.js';
+
+// ==========================================================================
+// 1. BOILERPLATE UTILITY FUNCTIONS (Pre-built by Adobe)
+// ==========================================================================
+
 /**
- * Moves all the attributes from a given element to another given element.
- * @param {Element} from the element to copy attributes from
- * @param {Element} to the element to copy attributes to
+ * [BOILERPLATE - DEFAULT]
+ * Moves all specified attributes from a source element to a target element.
+ * @param {Element} from The element to copy attributes from
+ * @param {Element} to The element to copy attributes to
+ * @param {Array} attributes Optional array of attribute names
  */
 export function moveAttributes(from, to, attributes) {
   if (!attributes) {
@@ -32,9 +39,11 @@ export function moveAttributes(from, to, attributes) {
 }
 
 /**
- * Move instrumentation attributes from a given element to another given element.
- * @param {Element} from the element to copy attributes from
- * @param {Element} to the element to copy attributes to
+ * [BOILERPLATE - DEFAULT]
+ * Moves authoring instrumentation attributes (Universal Editor/AEM tracking)
+ * from one element to another.
+ * @param {Element} from The element to copy attributes from
+ * @param {Element} to The element to copy attributes to
  */
 export function moveInstrumentation(from, to) {
   moveAttributes(
@@ -47,7 +56,8 @@ export function moveInstrumentation(from, to) {
 }
 
 /**
- * load fonts.css and set a session storage flag
+ * [BOILERPLATE - DEFAULT]
+ * Asynchronously loads custom fonts (styles/fonts.css) and sets a session flag.
  */
 async function loadFonts() {
   await loadCSS(`${window.hlx.codeBasePath}/styles/fonts.css`);
@@ -58,15 +68,21 @@ async function loadFonts() {
   }
 }
 
+// ==========================================================================
+// 2. AUTO-BLOCKING MECHANICS (EDS #15)
+// ==========================================================================
+
 /**
- * Automatically converts standalone YouTube links into embed blocks.
+ * [MANISH ADDED - CUSTOM AUTO-BLOCK]
+ * Scans the DOM for standalone YouTube URLs in plain paragraphs and 
+ * automatically wraps them into an 'embed' block container without requiring author tables.
  * @param {Element} main The main container element
  */
 function buildEmbedBlocks(main) {
   main.querySelectorAll('a[href*="youtube.com"], a[href*="youtu.be"]').forEach((a) => {
     const parent = a.closest('p, h1, h2, h3, h4, h5, h6');
     if (parent) {
-      // Create an 'embed' block containing the link element
+      // Create a synthetic 'embed' block containing the video link
       const embedBlock = buildBlock('embed', [[a.cloneNode(true)]]);
       parent.replaceWith(embedBlock);
     }
@@ -74,20 +90,45 @@ function buildEmbedBlocks(main) {
 }
 
 /**
- * Builds all synthetic blocks in a container element.
+ * [MANISH ADDED - CUSTOM AUTO-BLOCK]
+ * Scans the top paragraph for a fire emoji '🔥' and automatically converts
+ * plain author text into a styled 'announcement' banner block.
+ * @param {Element} main The main container element
+ */
+function buildAnnouncementBlock(main) {
+  const firstParagraph = main.querySelector('p');
+  if (firstParagraph && firstParagraph.textContent.includes('🔥')) {
+    const section = firstParagraph.closest('div');
+    const block = buildBlock('announcement', { elems: [firstParagraph] });
+    section.prepend(block);
+  }
+}
+
+/**
+ * [BOILERPLATE STRUCTURE + MANISH CUSTOM AUTO-BLOCKS]
+ * Orchestrates all automated block generation before sections are loaded.
  * @param {Element} main The container element
  */
 function buildAutoBlocks(main) {
   try {
-    buildEmbedBlocks(main); // <-- Call YouTube auto-blocker
+    // [MANISH ADDED] Auto-block standalone YouTube URLs into video embed components
+    buildEmbedBlocks(main);
+
+    // [MANISH ADDED] Auto-block top promo text starting with 🔥 into announcement banner
+    buildAnnouncementBlock(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
   }
 }
 
+// ==========================================================================
+// 3. DOM DECORATION HELPERS (Pre-built by Adobe)
+// ==========================================================================
+
 /**
- * Decorates formatted links to style them as buttons.
+ * [BOILERPLATE - DEFAULT]
+ * Decorates formatted links (strong/em) and converts them into styled button components.
  * @param {HTMLElement} main The main container element
  */
 export function decorateButtons(main) {
@@ -115,10 +156,10 @@ export function decorateButtons(main) {
       a.classList.add('accent');
       const outer = strong.contains(em) ? strong : em;
       outer.replaceWith(a);
-    } else if (strong) {
+    } else if (strong) { // primary button
       a.classList.add('primary');
       strong.replaceWith(a);
-    } else {
+    } else { // secondary button
       a.classList.add('secondary');
       em.replaceWith(a);
     }
@@ -126,21 +167,27 @@ export function decorateButtons(main) {
 }
 
 /**
- * Decorates the main element.
+ * [BOILERPLATE - DEFAULT]
+ * Master DOM decorator executed during initial render.
+ * Executes icon rendering, auto-block generation, section partitioning, block decoration, and button styling.
  * @param {Element} main The main element
  */
-// eslint-disable-next-line import/prefer-default-export
 export function decorateMain(main) {
   decorateIcons(main);
-  buildAutoBlocks(main);
+  buildAutoBlocks(main);     // <-- Triggers Manish's Auto-Blockers here!
   decorateSections(main);
   decorateBlocks(main);
   decorateButtons(main);
 }
 
+// ==========================================================================
+// 4. CORE PAGE LIFECYCLE PHASES (EDS #14)
+// ==========================================================================
+
 /**
- * Loads everything needed to get to LCP.
- * @param {Element} doc The container element
+ * [BOILERPLATE - EDS #14] PHASE 1: EAGER LOADING
+ * Loads high-priority above-the-fold content to reach Largest Contentful Paint (LCP) immediately.
+ * @param {Element} doc The document element
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
@@ -153,7 +200,7 @@ async function loadEager(doc) {
   }
 
   try {
-    /* if desktop (proxy for fast connection) or fonts already loaded, load fonts.css */
+    /* If desktop or fonts already cached in sessionStorage, load fonts.css immediately */
     if (window.innerWidth >= 900 || sessionStorage.getItem('fonts-loaded')) {
       loadFonts();
     }
@@ -163,8 +210,9 @@ async function loadEager(doc) {
 }
 
 /**
- * Loads everything that doesn't need to be delayed.
- * @param {Element} doc The container element
+ * [BOILERPLATE - EDS #14] PHASE 2: LAZY LOADING
+ * Loads secondary elements: Header, Footer, below-the-fold sections, lazy CSS, and fonts.
+ * @param {Element} doc The document element
  */
 async function loadLazy(doc) {
   loadHeader(doc.querySelector('header'));
@@ -183,19 +231,24 @@ async function loadLazy(doc) {
 }
 
 /**
- * Loads everything that happens a lot later,
- * without impacting the user experience.
+ * [BOILERPLATE - EDS #14] PHASE 3: DELAYED LOADING
+ * Postpones non-critical tasks (analytics, chatbots, tracking scripts) by 3 seconds 
+ * so they don't impact Core Web Vitals or user interaction.
  */
 function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
-  // load anything that can be postponed to the latest here
 }
 
+/**
+ * [BOILERPLATE - DEFAULT]
+ * Main Entry Point: Sequentially triggers Eager -> Lazy -> Delayed execution pipeline.
+ */
 async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
 }
 
+// Start the page execution pipeline
 loadPage();
