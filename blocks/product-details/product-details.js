@@ -61,7 +61,7 @@ export default async function decorate(block) {
   const cartBtn = block.querySelector('#add-to-cart-btn');
   cartBtn?.addEventListener('click', () => {
     // 1. Visual Button Feedback
-    cartBtn.textContent = 'Added to Cart! ✓';
+    cartBtn.textContent = 'Added to Cart! ';
     cartBtn.style.backgroundColor = '#2e7d32';
     setTimeout(() => {
       cartBtn.textContent = 'Add to Cart 🛒';
