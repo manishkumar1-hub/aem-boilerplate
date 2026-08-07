@@ -323,3 +323,56 @@ main .section.highlight {
   margin: 0;
   padding: 40px 0;
 }
+/* ==========================================================================
+   Section Metadata Custom Styles (EDS #15)
+   ========================================================================== */
+
+/* 1. Dark Hero Section */
+main .section.dark {
+  background-color: #0f172a;
+  color: #f8fafc;
+  padding: 3rem 1.5rem;
+  border-bottom: 2px solid #1e293b;
+}
+
+main .section.dark .pdp-title {
+  color: #ffffff;
+}
+
+main .section.dark .pdp-description,
+main .section.dark .pdp-sku {
+  color: #94a3b8;
+}
+
+main .section.dark label {
+  color: #cbd5e1;
+}
+
+/* 2. Light Gray Accent Section */
+main .section.light-bg {
+  background-color: #f8fafc;
+  color: #0f172a;
+  padding: 3.5rem 1.5rem;
+  max-width: 1050px;
+  margin: 0 auto;
+  border-radius: 12px;
+}
+
+/* 3. Highlight Border Modifier */
+main .section.highlight-left {
+  border-left: 6px solid #0066cc;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  margin-top: 2rem;
+  margin-bottom: 3rem;
+}
+
+main .section.light-bg h3 {
+  margin-top: 0;
+  font-size: 1.8rem;
+  color: #0066cc;
+}
+
+main .section.light-bg ul {
+  line-height: 1.8;
+  font-size: 1.05rem;
+}
