@@ -398,8 +398,3 @@ main .announcement {
 main .announcement p {
   margin: 0;
 }
-/* Custom section background color */
-.section.navy {
-  background-color: #0f172a;
-  color: #ffffff;
-}
