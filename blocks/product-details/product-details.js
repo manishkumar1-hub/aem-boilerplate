@@ -9,6 +9,11 @@ export default async function decorate(block) {
 
   block.innerHTML = '';
 
+  // Apply Universal Editor Component Level Instrumentation
+  block.setAttribute('data-aue-type', 'component');
+  block.setAttribute('data-aue-model', 'product-details');
+  block.setAttribute('data-aue-label', 'Product Details');
+
   const pdpWrapper = document.createElement('div');
   pdpWrapper.className = 'pdp-wrapper';
   pdpWrapper.innerHTML = `
