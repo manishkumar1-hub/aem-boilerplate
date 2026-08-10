@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /drafts/
 
-Sitemap: https://main--aem-boilerplate--manishkumar1-hub.aem.live/sitemap-en.xml
+Sitemap: https://main--aem-boilerplate--manishkumar1-hub.aem.live/sitemap.xml
