@@ -1,16 +1,23 @@
 version: 1
-
 indices:
-  pages:
+  main:
+    target: /query-index.json
     include:
       - '/**'
     exclude:
-      - '/**.json'
-    target: /query-index.json
+      - '/nav'
+      - '/footer'
+      - '/fragments/**'
     properties:
+      title:
+        select: head > meta[property="og:title"]
+        value: attribute(el, 'content')
+      description:
+        select: head > meta[property="og:description"]
+        value: attribute(el, 'content')
+      image:
+        select: head > meta[property="og:image"]
+        value: attribute(el, 'content')
       lastModified:
         select: none
-        value: parseTimestamp(headers["last-modified"], "ddd, DD MMM YYYY hh:mm:ss GMT")
-      robots:
-        select: head > meta[name="robots"]
-        value: attribute(el, "content")
+        value: parseTimestamp(headers['last-modified'], 'EEE, dd MMM yyyy HH:mm:ss z')
