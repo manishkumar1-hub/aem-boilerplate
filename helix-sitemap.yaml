@@ -4,5 +4,3 @@ sitemaps:
     origin: https://main--aem-boilerplate--manishkumar1-hub.aem.page
     source: /query-index.json
     destination: /sitemap.xml
-    changefreq: weekly
-    priority: 0.8
