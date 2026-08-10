@@ -82,8 +82,8 @@ function buildEmbedBlocks(main) {
   main.querySelectorAll('a[href*="youtube.com"], a[href*="youtu.be"]').forEach((a) => {
     const parent = a.closest('p, h1, h2, h3, h4, h5, h6');
     if (parent) {
-      // Create a synthetic 'embed' block containing the video link
-      const embedBlock = buildBlock('embed', [[a.cloneNode(true)]]);
+      // Changed 'embed' to 'embedd'
+      const embedBlock = buildBlock('embedd', [[a.cloneNode(true)]]);
       parent.replaceWith(embedBlock);
     }
   });
