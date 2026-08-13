@@ -1,5 +1,4 @@
 version: 1
-
 sitemaps:
   default:
     origin: https://main--aem-boilerplate--manishkumar1-hub.aem.live

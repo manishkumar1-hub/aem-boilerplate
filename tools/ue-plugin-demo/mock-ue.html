@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Universal Editor Custom Lit Plugin Simulation</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; margin: 30px; background: #fafafa; }
+    .header { margin-bottom: 24px; border-bottom: 2px solid #ddd; padding-bottom: 12px; }
+    .editor-layout { display: flex; gap: 40px; align-items: flex-start; }
+
+    /* Simulated Page Canvas */
+    .canvas {
+      flex: 1;
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px dashed #bbb;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    /* Product Card Block on Page Canvas */
+    .product-card-block {
+      padding: 30px;
+      color: white;
+      background-color: #0066cc;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      max-width: 400px;
+    }
+    .product-card-block .sku-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.25);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+    .product-card-block h2 { margin: 12px 0 6px 0; font-size: 22px; }
+    .product-card-block .price { font-size: 20px; font-weight: bold; margin-bottom: 12px; }
+    .product-card-block .tagline { font-style: italic; font-size: 14px; opacity: 0.9; }
+
+    /* Inspector Sidebar */
+    .inspector-panel {
+      width: 340px;
+    }
+    .inspector-title {
+      font-size: 13px;
+      font-weight: bold;
+      color: #666;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h2>🖥️ Universal Editor Simulation Canvas</h2>
+    <p>Interact with the custom Lit Plugin inspector on the right to watch the block canvas update live in real-time!</p>
+  </div>
+
+  <div class="editor-layout">
+
+    <!-- 1. Simulated Page Block on Canvas -->
+    <div class="canvas">
+      <h3>Live Page Block Canvas</h3>
+      <div id="product-block" class="product-card-block">
+        <span class="sku-badge" data-aue-prop="productSku">SKU: PROD-101</span>
+        <h2 data-aue-prop="productTitle">Wireless Headphones</h2>
+        <div class="price" data-aue-prop="productPrice">$199.99</div>
+        <div class="tagline" data-aue-prop="productTagline">⚡ Unmatched Performance & Sleek Design</div>
+      </div>
+    </div>
+
+    <!-- 2. Simulated Universal Editor Inspector Panel -->
+    <div class="inspector-panel">
+      <div class="inspector-title">Property Inspector Sidebar</div>
+      <!-- Custom Lit Web Component Plugin -->
+      <ue-custom-plugin></ue-custom-plugin>
+    </div>
+
+  </div>
+
+  <!-- Load Lit Plugin Script -->
+  <script type="module" src="./ue-custom-plugin.js"></script>
+
+  <!-- Simulated Universal Editor Event Bus Engine -->
+  <script>
+    window.addEventListener('message', (event) => {
+      if (event.data && event.data.type === 'ue:update-property') {
+        const { propertyName, value } = event.data.detail;
+        
+        // Find element on canvas with corresponding data-aue-prop attribute
+        const targetNode = document.querySelector(`[data-aue-prop="${propertyName}"]`);
+        
+        if (propertyName === 'backgroundColor') {
+          document.getElementById('product-block').style.backgroundColor = value;
+        } else if (propertyName === 'productSku') {
+          if (targetNode) targetNode.textContent = `SKU: ${value}`;
+        } else if (targetNode) {
+          targetNode.textContent = value;
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

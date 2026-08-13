@@ -1,0 +1,14 @@
+/*
+ * Personalized Fragment - keep the block from flashing while the
+ * right variant is being fetched, and reserve some space so the
+ * page does not jump (protects Cumulative Layout Shift / CLS).
+ */
+
+.personalized-fragment {
+  transition: opacity 0.2s ease-in;
+}
+
+.personalized-fragment.personalized-fragment--loading {
+  min-height: 120px; /* rough placeholder height - tune to your fragment */
+  visibility: hidden;
+}
