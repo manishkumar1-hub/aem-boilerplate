@@ -1,39 +1,25 @@
 /*
  * Personalized Fragment Block
  * ------------------------------------------------------------------
- * Swaps in a DIFFERENT fragment depending on the visitor's audience.
- * Built directly on top of the standard Fragment block's
- * loadFragment() -> we do NOT duplicate the loading logic.
+ * Swaps in a different fragment depending on the visitor's audience.
  *
- * Authoring (a table in your Google Doc / Word page):
+ * UPDATED for EDS #23: now detects the visitor's COUNTRY first (via
+ * geo.js), stores it on window.__edsCountry, THEN resolves the
+ * audience - so geo audiences (in / us / eu) can match.
  *
- *   +-----------------------+-----------------------------------+
- *   | Personalized Fragment |                                   |
- *   +-----------------------+-----------------------------------+
- *   | default               | /fragments/diwali-offer           |
- *   | mobile                | /fragments/diwali-offer-mobile    |
- *   | returning             | /fragments/diwali-offer-returning |
- *   +-----------------------+-----------------------------------+
- *
- *   - Column 1 = audience name (must match a key in audiences.js,
- *     or the special word `default`).
- *   - Column 2 = the fragment path (a link to the fragment doc).
- *   - The `default` row is REQUIRED and is used when nothing matches.
- *   - Rows are tested TOP-DOWN, so put the most specific audience
- *     highest.
+ * Authoring table example:
+ *   | Personalized Fragment |                          |
+ *   | in                    | /fragments/offer-in      |
+ *   | us                    | /fragments/offer-us      |
+ *   | default               | /fragments/diwali-offer  |
  * ------------------------------------------------------------------
  */
 
-// Reuse the loader from the standard Fragment block you already have.
 // eslint-disable-next-line import/no-cycle
 import { loadFragment } from '../fragment/fragment.js';
 import { resolveAudience, rememberVisit } from '../../scripts/audiences.js';
+import { getCountry } from '../../scripts/geo.js';
 
-/**
- * Read the authored table into { map, order }.
- *   map   = { default: '/path', mobile: '/path', ... }
- *   order = ['mobile', 'returning', ...]  (everything except default)
- */
 function readRows(block) {
   const map = {};
   const order = [];
@@ -53,26 +39,26 @@ function readRows(block) {
 export default async function decorate(block) {
   const { map, order } = readRows(block);
 
-  // Decide who this visitor is, THEN pick the fragment.
-  // We resolve BEFORE loading, so we never render the wrong variant
-  // first -> no flicker / FOOC.
+  // NEW: detect the visitor's country BEFORE resolving, so the geo
+  // audiences (in / us / eu) have a value to check.
+  window.__edsCountry = await getCountry();
+
+  // Decide who this visitor is, then pick the fragment path.
   const audience = resolveAudience(order);
   const path = map[audience] || map.default;
 
-  // Pre-hide + reserve space while we fetch, so the page does not jump.
+  // Pre-hide + reserve space while we fetch (no flicker, no jump).
   block.classList.add('personalized-fragment--loading');
-  block.dataset.audience = audience; // handy for debugging in DevTools
+  block.dataset.audience = audience;
+  block.dataset.country = window.__edsCountry; // handy for debugging
 
-  block.textContent = ''; // remove the authored table markup
+  block.textContent = '';
 
   if (path) {
     const fragment = await loadFragment(path);
     if (fragment) block.replaceChildren(...fragment.childNodes);
   }
 
-  // Reveal the resolved fragment.
   block.classList.remove('personalized-fragment--loading');
-
-  // Remember this visit so `returning` can match next time.
   rememberVisit();
 }
