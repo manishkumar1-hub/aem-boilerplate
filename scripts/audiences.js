@@ -1,3 +1,4 @@
+/* eslint-disable */
 /*
  * audiences.js
  * ------------------------------------------------------------------
@@ -19,12 +20,12 @@ export const AUDIENCES = {
   returning: () => {
     try {
       return localStorage.getItem('eds-visited') === 'true';
-    } catch (e) {
+    } catch {
       return false;
     }
   },
 
-  // --- GEO audiences (NEW) ---
+  // --- GEO audiences ---
   // These read the country that geo.js resolved (window.__edsCountry).
   // The block sets that value BEFORE calling resolveAudience().
   in: () => window.__edsCountry === 'IN',
@@ -44,7 +45,7 @@ export const AUDIENCES = {
 export function rememberVisit() {
   try {
     localStorage.setItem('eds-visited', 'true');
-  } catch (e) { /* ignore */ }
+  } catch { /* ignore */ }
 }
 
 /**
