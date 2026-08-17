@@ -1,27 +1,70 @@
+# helix-query.yaml
+# ------------------------------------------------------------------
+# Defines the query indexes EDS builds when pages are PUBLISHED.
+# Lives in the ROOT of your GitHub repo.
+# After changing this file, re-publish the affected pages OR run a
+# Reindex from the Index Admin tool (tools.aem.live) — structural
+# changes do not apply to already-indexed pages automatically.
+# ------------------------------------------------------------------
 version: 1
 
 indices:
-  main:
-    target: /query-index.json
+
+  # ============================================================
+  # Index 1 — site-wide default
+  # Fetch at: /query-index.json
+  # ============================================================
+  default:
     include:
-      - '/**'
-    exclude:
-      - '/nav'
-      - '/footer'
-      - '/fragments/**'
+      - /**
+    # A YAML anchor (&excludes) so other indexes can reuse this list.
+    exclude: &excludes
+      - /drafts/**
+      - /fragments/**
+      - /nav
+      - /footer
+      - /**.json
+    target: /query-index.json
     properties:
       title:
         select: head > meta[property="og:title"]
-        value: attribute(el, 'content')
+        value: attribute(el, "content")
       description:
-        select: head > meta[property="og:description"]
-        value: attribute(el, 'content')
+        select: head > meta[name="description"]
+        value: attribute(el, "content")
       image:
         select: head > meta[property="og:image"]
-        value: attribute(el, 'content')
-      robots:
-        select: head > meta[name="robots"]
-        value: attribute(el, 'content')
+        value: attribute(el, "content")
       lastModified:
         select: none
-        value: parseTimestamp(headers['last-modified'], 'ddd, DD MMM YYYY hh:mm:ss GMT')
+        value: parseTimestamp(headers["last-modified"], "ddd, DD MMM YYYY hh:mm:ss GMT")
+
+  # ============================================================
+  # Index 2 — blog only (scoped, with extra columns)
+  # Fetch at: /blog/query-index.json
+  # ============================================================
+  blog:
+    include:
+      - /blog/**
+    exclude: *excludes          # reuse the anchor from above
+    target: /blog/query-index.json
+    properties:
+      title:
+        select: head > meta[property="og:title"]
+        value: attribute(el, "content")
+      description:
+        select: head > meta[name="description"]
+        value: attribute(el, "content")
+      image:
+        select: head > meta[property="og:image"]
+        value: attribute(el, "content")
+      author:
+        select: head > meta[name="author"]
+        value: attribute(el, "content")
+      tags:
+        select: head > meta[name="article:tag"]
+        # 'values' (plural) captures an ARRAY when there are several matches
+        values: attribute(el, "content")
+      publishDate:
+        select: head > meta[name="publication-date"]
+        value: attribute(el, "content")
