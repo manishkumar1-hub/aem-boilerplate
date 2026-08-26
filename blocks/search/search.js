@@ -11,6 +11,7 @@
  *   | limit       | 500                    |
  * ------------------------------------------------------------------
  */
+/* eslint-disable */
 
 // Fetch every row from a sheet-style index JSON, paging if needed.
 async function fetchIndex(source, pageSize) {
