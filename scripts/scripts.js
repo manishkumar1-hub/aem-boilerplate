@@ -1,5 +1,6 @@
 /* eslint-disable */
 import {
+  sampleRUM, // <-- [ADDED FOR RUM TELEMETRY]
   buildBlock,
   loadHeader,
   loadFooter,
@@ -181,7 +182,7 @@ export function decorateMain(main) {
 }
 
 // ==========================================================================
-// 4. CORE PAGE LIFECYCLE PHASES (EDS #14)
+// 4. CORE PAGE LIFECYCLE PHASES (EDS #14 + RUM INTEGRATION)
 // ==========================================================================
 
 /**
@@ -192,6 +193,13 @@ export function decorateMain(main) {
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
+
+  // ----------------------------------------------------------------------
+  // RUM CHECKPOINT 1: Top of Page & Initial Load Telemetry
+  // Measures Time to First Byte (TTFB) and initial view initialization.
+  // ----------------------------------------------------------------------
+  sampleRUM('top');
+
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
@@ -228,6 +236,12 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+
+  // ----------------------------------------------------------------------
+  // RUM CHECKPOINT 2: Core Web Vitals (CWV) Telemetry
+  // Measures site-wide LCP, CLS, and INP metrics across all loaded blocks.
+  // ----------------------------------------------------------------------
+  sampleRUM('cwv');
 }
 
 /**
@@ -237,7 +251,15 @@ async function loadLazy(doc) {
  */
 function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
-  window.setTimeout(() => import('./delayed.js'), 3000);
+  window.setTimeout(() => {
+    // ----------------------------------------------------------------------
+    // RUM CHECKPOINT 3: Delayed Session & Interaction Depth
+    // Captures scroll depth and deferred engagement telemetry.
+    // ----------------------------------------------------------------------
+    sampleRUM('lazy');
+
+    import('./delayed.js');
+  }, 3000);
 }
 
 /**
