@@ -185,37 +185,46 @@ export function decorateMain(main) {
 // 4. SIDEKICK EXTENSION API INTEGRATION (EDS #8)
 // ==========================================================================
 
-/**
- * Global listener on document for custom Sidekick toolbar events.
- */
-document.addEventListener('custom:purge-cache', async (event) => {
-  const activePath = event.detail?.location?.pathname || window.location.pathname;
+function attachSidekickListeners() {
   const sk = document.querySelector('aem-sidekick, helix-sidekick');
+  if (!sk) return;
 
-  const notify = (msg, level = 'info') => {
-    if (sk && typeof sk.notify === 'function') {
-      sk.notify(msg, level);
-    } else {
-      alert(`[${level.toUpperCase()}]: ${msg}`);
+  sk.addEventListener('custom:purge-cache', async (event) => {
+    const activePath = event.detail?.location?.pathname || window.location.pathname;
+
+    const notify = (msg, level = 'info') => {
+      if (typeof sk.notify === 'function') {
+        sk.notify(msg, level);
+      } else {
+        alert(`[${level.toUpperCase()}]: ${msg}`);
+      }
+    };
+
+    notify(`Purging CDN edge cache for ${activePath}...`, 'info');
+
+    try {
+      const res = await fetch(`https://admin.hlx.page/cache/manishkumar1-hub/aem-boilerplate/main${activePath}`, {
+        method: 'POST',
+      });
+
+      if (res.ok) {
+        notify('CDN Edge Cache purged successfully!', 'success');
+      } else {
+        notify('Failed to purge CDN cache.', 'error');
+      }
+    } catch {
+      notify('Network error during cache purge.', 'error');
     }
-  };
+  });
+}
 
-  notify(`Purging CDN edge cache for ${activePath}...`, 'info');
-
-  try {
-    const res = await fetch(`https://admin.hlx.page/cache/manishkumar1-hub/aem-boilerplate/main${activePath}`, {
-      method: 'POST',
-    });
-
-    if (res.ok) {
-      notify('CDN Edge Cache purged successfully!', 'success');
-    } else {
-      notify('Failed to purge CDN cache.', 'error');
-    }
-  } catch {
-    notify('Network error during cache purge.', 'error');
-  }
-});
+// Bind listener immediately if mounted, otherwise wait for 'sidekick-ready'
+const skElement = document.querySelector('aem-sidekick, helix-sidekick');
+if (skElement) {
+  attachSidekickListeners();
+} else {
+  document.addEventListener('sidekick-ready', attachSidekickListeners, { once: true });
+}
 
 // ==========================================================================
 // 5. CORE PAGE LIFECYCLE PHASES (EDS #14 + RUM INTEGRATION)
