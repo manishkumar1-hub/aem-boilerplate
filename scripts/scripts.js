@@ -182,7 +182,6 @@ export function decorateMain(main) {
 }
 
 
-
 // ==========================================================================
 // 4. SIDEKICK EXTENSION API INTEGRATION (EDS #8)
 // ==========================================================================
@@ -214,12 +213,6 @@ window.addEventListener('custom:purge-cache', async (event) => {
   }
 });
 
-// Register Sidekick listeners when element is present or when 'sidekick-ready' event triggers
-if (document.querySelector('aem-sidekick, helix-sidekick')) {
-  initSidekickExtensions();
-} else {
-  document.addEventListener('sidekick-ready', initSidekickExtensions, { once: true });
-}
 
 // ==========================================================================
 // 5. CORE PAGE LIFECYCLE PHASES (EDS #14 + RUM INTEGRATION)
