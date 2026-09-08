@@ -181,35 +181,43 @@ export function decorateMain(main) {
   decorateButtons(main);
 }
 
-
 // ==========================================================================
 // 4. SIDEKICK EXTENSION API INTEGRATION (EDS #8)
 // ==========================================================================
 
 /**
  * [SIDEKICK EXTENSION HANDLER]
- * Listens on the global window object for custom Sidekick toolbar events.
+ * Robust listener for custom Sidekick toolbar events with automatic visual feedback.
  */
 window.addEventListener('custom:purge-cache', async (event) => {
-  const sk = event.target || document.querySelector('aem-sidekick, helix-sidekick');
+  // Query sidekick element explicitly
+  const sk = document.querySelector('aem-sidekick, helix-sidekick');
   const activePath = event.detail?.location?.pathname || window.location.pathname;
 
-  if (sk && typeof sk.notify === 'function') {
-    sk.notify(`Purging CDN edge cache for ${activePath}...`, 'info');
-
-    try {
-      const response = await fetch(`https://admin.hlx.page/cache/owner/repo/main${activePath}`, {
-        method: 'POST',
-      });
-
-      if (response.ok) {
-        sk.notify('CDN Edge Cache purged successfully!', 'success');
-      } else {
-        sk.notify('Failed to purge CDN cache.', 'error');
-      }
-    } catch {
-      sk.notify('Network error during cache purge.', 'error');
+  // Helper function to guarantee notification display
+  const notify = (message, level = 'info') => {
+    if (sk && typeof sk.notify === 'function') {
+      sk.notify(message, level);
+    } else {
+      // Fallback popup if Sidekick toast is unavailable
+      alert(`[Sidekick ${level.toUpperCase()}]: ${message}`);
     }
+  };
+
+  notify(`Purging CDN edge cache for ${activePath}...`, 'info');
+
+  try {
+    const response = await fetch(`https://admin.hlx.page/cache/owner/repo/main${activePath}`, {
+      method: 'POST',
+    });
+
+    if (response.ok) {
+      notify('CDN Edge Cache purged successfully!', 'success');
+    } else {
+      notify('Failed to purge CDN cache.', 'error');
+    }
+  } catch {
+    notify('Network error during cache purge.', 'error');
   }
 });
 
