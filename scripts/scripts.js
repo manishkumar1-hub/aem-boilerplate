@@ -185,41 +185,49 @@ export function decorateMain(main) {
 // 4. SIDEKICK EXTENSION API INTEGRATION (EDS #8)
 // ==========================================================================
 
-/**
- * [SIDEKICK EXTENSION HANDLER]
- * Robust listener for custom Sidekick toolbar events with automatic visual feedback.
- */
-window.addEventListener('custom:purge-cache', async (event) => {
-  // Query sidekick element explicitly
+function handlePurgeCache(event) {
   const sk = document.querySelector('aem-sidekick, helix-sidekick');
   const activePath = event.detail?.location?.pathname || window.location.pathname;
 
-  // Helper function to guarantee notification display
-  const notify = (message, level = 'info') => {
+  const notify = (msg, level = 'info') => {
     if (sk && typeof sk.notify === 'function') {
-      sk.notify(message, level);
+      sk.notify(msg, level);
     } else {
-      // Fallback popup if Sidekick toast is unavailable
-      alert(`[Sidekick ${level.toUpperCase()}]: ${message}`);
+      alert(`[${level.toUpperCase()}]: ${msg}`);
     }
   };
 
   notify(`Purging CDN edge cache for ${activePath}...`, 'info');
 
-  try {
-    const response = await fetch(`https://admin.hlx.page/cache/owner/repo/main${activePath}`, {
-      method: 'POST',
+  fetch(`https://admin.hlx.page/cache/owner/repo/main${activePath}`, { method: 'POST' })
+    .then((res) => {
+      if (res.ok) {
+        notify('CDN Edge Cache purged successfully!', 'success');
+      } else {
+        notify('Failed to purge CDN cache.', 'error');
+      }
+    })
+    .catch(() => {
+      notify('Network error during cache purge.', 'error');
     });
+}
 
-    if (response.ok) {
-      notify('CDN Edge Cache purged successfully!', 'success');
-    } else {
-      notify('Failed to purge CDN cache.', 'error');
-    }
-  } catch {
-    notify('Network error during cache purge.', 'error');
+// Attach event listener directly to the Sidekick element
+const registerSidekickListeners = () => {
+  const sk = document.querySelector('aem-sidekick, helix-sidekick');
+  if (sk) {
+    sk.addEventListener('custom:purge-cache', handlePurgeCache);
   }
-});
+};
+
+if (document.querySelector('aem-sidekick, helix-sidekick')) {
+  registerSidekickListeners();
+} else {
+  document.addEventListener('sidekick-ready', registerSidekickListeners, { once: true });
+}
+
+// Global fallback listener for manual console testing
+window.addEventListener('custom:purge-cache', handlePurgeCache);
 
 
 // ==========================================================================
