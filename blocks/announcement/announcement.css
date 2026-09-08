@@ -1,0 +1,41 @@
+/* Announcement Block Container */
+.announcement-wrapper {
+  width: 100%;
+  margin: 16px 0;
+}
+
+.announcement {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  border-radius: 8px;
+  color: #856404;
+  padding: 12px 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Internal Layout Mechanics */
+.announcement .announcement-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.announcement p {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.announcement a {
+  color: #533f03;
+  text-decoration: underline;
+  font-weight: 700;
+  transition: color 0.2s ease;
+}
+
+.announcement a:hover {
+  color: #000000;
+}
