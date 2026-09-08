@@ -185,9 +185,12 @@ export function decorateMain(main) {
 // 4. SIDEKICK EXTENSION API INTEGRATION (EDS #8)
 // ==========================================================================
 
-function handlePurgeCache(event) {
-  const sk = document.querySelector('aem-sidekick, helix-sidekick');
+/**
+ * Global listener on document for custom Sidekick toolbar events.
+ */
+document.addEventListener('custom:purge-cache', async (event) => {
   const activePath = event.detail?.location?.pathname || window.location.pathname;
+  const sk = document.querySelector('aem-sidekick, helix-sidekick');
 
   const notify = (msg, level = 'info') => {
     if (sk && typeof sk.notify === 'function') {
@@ -199,36 +202,20 @@ function handlePurgeCache(event) {
 
   notify(`Purging CDN edge cache for ${activePath}...`, 'info');
 
-  fetch(`https://admin.hlx.page/cache/owner/repo/main${activePath}`, { method: 'POST' })
-    .then((res) => {
-      if (res.ok) {
-        notify('CDN Edge Cache purged successfully!', 'success');
-      } else {
-        notify('Failed to purge CDN cache.', 'error');
-      }
-    })
-    .catch(() => {
-      notify('Network error during cache purge.', 'error');
+  try {
+    const res = await fetch(`https://admin.hlx.page/cache/manishkumar1-hub/aem-boilerplate/main${activePath}`, {
+      method: 'POST',
     });
-}
 
-// Attach event listener directly to the Sidekick element
-const registerSidekickListeners = () => {
-  const sk = document.querySelector('aem-sidekick, helix-sidekick');
-  if (sk) {
-    sk.addEventListener('custom:purge-cache', handlePurgeCache);
+    if (res.ok) {
+      notify('CDN Edge Cache purged successfully!', 'success');
+    } else {
+      notify('Failed to purge CDN cache.', 'error');
+    }
+  } catch {
+    notify('Network error during cache purge.', 'error');
   }
-};
-
-if (document.querySelector('aem-sidekick, helix-sidekick')) {
-  registerSidekickListeners();
-} else {
-  document.addEventListener('sidekick-ready', registerSidekickListeners, { once: true });
-}
-
-// Global fallback listener for manual console testing
-window.addEventListener('custom:purge-cache', handlePurgeCache);
-
+});
 
 // ==========================================================================
 // 5. CORE PAGE LIFECYCLE PHASES (EDS #14 + RUM INTEGRATION)
