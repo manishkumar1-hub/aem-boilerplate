@@ -182,7 +182,48 @@ export function decorateMain(main) {
 }
 
 // ==========================================================================
-// 4. CORE PAGE LIFECYCLE PHASES (EDS #14 + RUM INTEGRATION)
+// 4. SIDEKICK EXTENSION API INTEGRATION (EDS #8)
+// ==========================================================================
+
+/**
+ * [SIDEKICK EXTENSION HANDLER]
+ * Listens for custom events dispatched by the AEM Sidekick web component toolbar.
+ */
+function initSidekickExtensions() {
+  const sk = document.querySelector('aem-sidekick, helix-sidekick');
+  if (!sk) return;
+
+  // Handles 'Purge Edge Cache' button click event from Sidekick
+  sk.addEventListener('custom:purge-cache', async (event) => {
+    const { detail } = event;
+    const activePath = detail.location.pathname;
+
+    try {
+      sk.notify('Purging CDN cache...');
+      const response = await fetch(`https://admin.hlx.page/cache/owner/repo/main${activePath}`, {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        sk.notify('Cache purged successfully!', 'success');
+      } else {
+        sk.notify('Failed to purge CDN cache.', 'error');
+      }
+    } catch {
+      sk.notify('Network error during cache purge.', 'error');
+    }
+  });
+}
+
+// Register Sidekick listeners when element is present or when 'sidekick-ready' event triggers
+if (document.querySelector('aem-sidekick, helix-sidekick')) {
+  initSidekickExtensions();
+} else {
+  document.addEventListener('sidekick-ready', initSidekickExtensions, { once: true });
+}
+
+// ==========================================================================
+// 5. CORE PAGE LIFECYCLE PHASES (EDS #14 + RUM INTEGRATION)
 // ==========================================================================
 
 /**

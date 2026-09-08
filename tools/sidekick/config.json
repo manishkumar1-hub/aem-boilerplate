@@ -1,5 +1,20 @@
 {
   "project": "AEM XWalk Boilerplate",
   "editUrlLabel": "AEM Editor",
-  "editUrlPattern": "{{contentSourceUrl}}{{pathname}}?cmd=open"
+  "editUrlPattern": "{{contentSourceUrl}}{{pathname}}?cmd=open",
+  "plugins": [
+    {
+      "id": "stage-review",
+      "title": "Stage Review",
+      "url": "https://stage.example.com",
+      "passPath": true,
+      "environments": ["development", "preview", "edit"]
+    },
+    {
+      "id": "purge-cache",
+      "title": "Purge Edge Cache",
+      "event": "custom:purge-cache",
+      "environments": ["development", "preview", "live"]
+    }
+  ]
 }
