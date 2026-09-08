@@ -181,39 +181,38 @@ export function decorateMain(main) {
   decorateButtons(main);
 }
 
+
+
 // ==========================================================================
 // 4. SIDEKICK EXTENSION API INTEGRATION (EDS #8)
 // ==========================================================================
 
 /**
  * [SIDEKICK EXTENSION HANDLER]
- * Listens for custom events dispatched by the AEM Sidekick web component toolbar.
+ * Listens on the global window object for custom Sidekick toolbar events.
  */
-function initSidekickExtensions() {
-  const sk = document.querySelector('aem-sidekick, helix-sidekick');
-  if (!sk) return;
+window.addEventListener('custom:purge-cache', async (event) => {
+  const sk = event.target || document.querySelector('aem-sidekick, helix-sidekick');
+  const activePath = event.detail?.location?.pathname || window.location.pathname;
 
-  // Handles 'Purge Edge Cache' button click event from Sidekick
-  sk.addEventListener('custom:purge-cache', async (event) => {
-    const { detail } = event;
-    const activePath = detail.location.pathname;
+  if (sk && typeof sk.notify === 'function') {
+    sk.notify(`Purging CDN edge cache for ${activePath}...`, 'info');
 
     try {
-      sk.notify('Purging CDN cache...');
       const response = await fetch(`https://admin.hlx.page/cache/owner/repo/main${activePath}`, {
         method: 'POST',
       });
 
       if (response.ok) {
-        sk.notify('Cache purged successfully!', 'success');
+        sk.notify('CDN Edge Cache purged successfully!', 'success');
       } else {
         sk.notify('Failed to purge CDN cache.', 'error');
       }
     } catch {
       sk.notify('Network error during cache purge.', 'error');
     }
-  });
-}
+  }
+});
 
 // Register Sidekick listeners when element is present or when 'sidekick-ready' event triggers
 if (document.querySelector('aem-sidekick, helix-sidekick')) {
