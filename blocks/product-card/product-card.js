@@ -9,7 +9,7 @@ export default async function decorate(block) {
     const product = await response.json();
 
     // 🔍 DEV STEP: Inspect 'product' payload object in DevTools Scope panel
-    debugger;
+    // eslint-disable-next-line no-debugger
 
     // Render API payload into DOM
     block.innerHTML = `
@@ -23,8 +23,4 @@ export default async function decorate(block) {
   } catch (error) {
     block.innerHTML = '<p class="error-msg">Product unavailable.</p>';
   }
-<<<<<<< Updated upstream
 }
-=======
-}
->>>>>>> Stashed changes
