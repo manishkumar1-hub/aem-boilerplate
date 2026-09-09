@@ -23,4 +23,8 @@ export default async function decorate(block) {
   } catch (error) {
     block.innerHTML = '<p class="error-msg">Product unavailable.</p>';
   }
+<<<<<<< Updated upstream
 }
+=======
+}
+>>>>>>> Stashed changes
