@@ -1,0 +1,20 @@
+.product-card .product-card-container {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  max-width: 300px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.product-card img {
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.product-card .price {
+  display: block;
+  font-weight: bold;
+  color: #2e7d32;
+  margin-top: 8px;
+}

@@ -1,6 +1,4 @@
-/* eslint-disable */
 import {
-  sampleRUM, // <-- [ADDED FOR RUM TELEMETRY]
   buildBlock,
   loadHeader,
   loadFooter,
@@ -14,16 +12,10 @@ import {
   loadCSS,
 } from './aem.js';
 
-// ==========================================================================
-// 1. BOILERPLATE UTILITY FUNCTIONS (Pre-built by Adobe)
-// ==========================================================================
-
 /**
- * [BOILERPLATE - DEFAULT]
- * Moves all specified attributes from a source element to a target element.
- * @param {Element} from The element to copy attributes from
- * @param {Element} to The element to copy attributes to
- * @param {Array} attributes Optional array of attribute names
+ * Moves all the attributes from a given element to another given element.
+ * @param {Element} from the element to copy attributes from
+ * @param {Element} to the element to copy attributes to
  */
 export function moveAttributes(from, to, attributes) {
   if (!attributes) {
@@ -40,11 +32,9 @@ export function moveAttributes(from, to, attributes) {
 }
 
 /**
- * [BOILERPLATE - DEFAULT]
- * Moves authoring instrumentation attributes (Universal Editor/AEM tracking)
- * from one element to another.
- * @param {Element} from The element to copy attributes from
- * @param {Element} to The element to copy attributes to
+ * Move instrumentation attributes from a given element to another given element.
+ * @param {Element} from the element to copy attributes from
+ * @param {Element} to the element to copy attributes to
  */
 export function moveInstrumentation(from, to) {
   moveAttributes(
@@ -57,8 +47,7 @@ export function moveInstrumentation(from, to) {
 }
 
 /**
- * [BOILERPLATE - DEFAULT]
- * Asynchronously loads custom fonts (styles/fonts.css) and sets a session flag.
+ * load fonts.css and set a session storage flag
  */
 async function loadFonts() {
   await loadCSS(`${window.hlx.codeBasePath}/styles/fonts.css`);
@@ -69,67 +58,36 @@ async function loadFonts() {
   }
 }
 
-// ==========================================================================
-// 2. AUTO-BLOCKING MECHANICS (EDS #15)
-// ==========================================================================
-
 /**
- * [MANISH ADDED - CUSTOM AUTO-BLOCK]
- * Scans the DOM for standalone YouTube URLs in plain paragraphs and 
- * automatically wraps them into an 'embed' block container without requiring author tables.
+ * Automatically converts standalone YouTube links into embed blocks.
  * @param {Element} main The main container element
  */
 function buildEmbedBlocks(main) {
   main.querySelectorAll('a[href*="youtube.com"], a[href*="youtu.be"]').forEach((a) => {
     const parent = a.closest('p, h1, h2, h3, h4, h5, h6');
     if (parent) {
-      // Changed 'embed' to 'embedd'
-      const embedBlock = buildBlock('embedd', [[a.cloneNode(true)]]);
+      // Create an 'embed' block containing the link element
+      const embedBlock = buildBlock('embed', [[a.cloneNode(true)]]);
       parent.replaceWith(embedBlock);
     }
   });
 }
 
 /**
- * [MANISH ADDED - CUSTOM AUTO-BLOCK]
- * Scans the top paragraph for a fire emoji '🔥' and automatically converts
- * plain author text into a styled 'announcement' banner block.
- * @param {Element} main The main container element
- */
-function buildAnnouncementBlock(main) {
-  const firstParagraph = main.querySelector('p');
-  if (firstParagraph && firstParagraph.textContent.includes('🔥')) {
-    const section = firstParagraph.closest('div');
-    const block = buildBlock('announcement', { elems: [firstParagraph] });
-    section.prepend(block);
-  }
-}
-
-/**
- * [BOILERPLATE STRUCTURE + MANISH CUSTOM AUTO-BLOCKS]
- * Orchestrates all automated block generation before sections are loaded.
+ * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
  */
 function buildAutoBlocks(main) {
   try {
-    // [MANISH ADDED] Auto-block standalone YouTube URLs into video embed components
-    buildEmbedBlocks(main);
-
-    // [MANISH ADDED] Auto-block top promo text starting with 🔥 into announcement banner
-    buildAnnouncementBlock(main);
+    buildEmbedBlocks(main); // <-- Call YouTube auto-blocker
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
   }
 }
 
-// ==========================================================================
-// 3. DOM DECORATION HELPERS (Pre-built by Adobe)
-// ==========================================================================
-
 /**
- * [BOILERPLATE - DEFAULT]
- * Decorates formatted links (strong/em) and converts them into styled button components.
+ * Decorates formatted links to style them as buttons.
  * @param {HTMLElement} main The main container element
  */
 export function decorateButtons(main) {
@@ -157,10 +115,10 @@ export function decorateButtons(main) {
       a.classList.add('accent');
       const outer = strong.contains(em) ? strong : em;
       outer.replaceWith(a);
-    } else if (strong) { // primary button
+    } else if (strong) {
       a.classList.add('primary');
       strong.replaceWith(a);
-    } else { // secondary button
+    } else {
       a.classList.add('secondary');
       em.replaceWith(a);
     }
@@ -168,83 +126,25 @@ export function decorateButtons(main) {
 }
 
 /**
- * [BOILERPLATE - DEFAULT]
- * Master DOM decorator executed during initial render.
- * Executes icon rendering, auto-block generation, section partitioning, block decoration, and button styling.
+ * Decorates the main element.
  * @param {Element} main The main element
  */
+// eslint-disable-next-line import/prefer-default-export
 export function decorateMain(main) {
   decorateIcons(main);
-  buildAutoBlocks(main);     // <-- Triggers Manish's Auto-Blockers here!
+  buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
   decorateButtons(main);
 }
 
-// ==========================================================================
-// 4. SIDEKICK EXTENSION API INTEGRATION (EDS #8)
-// ==========================================================================
-
-function attachSidekickListeners() {
-  const sk = document.querySelector('aem-sidekick, helix-sidekick');
-  if (!sk) return;
-
-  sk.addEventListener('custom:purge-cache', async (event) => {
-    const activePath = event.detail?.location?.pathname || window.location.pathname;
-
-    const notify = (msg, level = 'info') => {
-      if (typeof sk.notify === 'function') {
-        sk.notify(msg, level);
-      } else {
-        alert(`[${level.toUpperCase()}]: ${msg}`);
-      }
-    };
-
-    notify(`Purging CDN edge cache for ${activePath}...`, 'info');
-
-    try {
-      const res = await fetch(`https://admin.hlx.page/cache/manishkumar1-hub/aem-boilerplate/main${activePath}`, {
-        method: 'POST',
-      });
-
-      if (res.ok) {
-        notify('CDN Edge Cache purged successfully!', 'success');
-      } else {
-        notify('Failed to purge CDN cache.', 'error');
-      }
-    } catch {
-      notify('Network error during cache purge.', 'error');
-    }
-  });
-}
-
-// Bind listener immediately if mounted, otherwise wait for 'sidekick-ready'
-const skElement = document.querySelector('aem-sidekick, helix-sidekick');
-if (skElement) {
-  attachSidekickListeners();
-} else {
-  document.addEventListener('sidekick-ready', attachSidekickListeners, { once: true });
-}
-
-// ==========================================================================
-// 5. CORE PAGE LIFECYCLE PHASES (EDS #14 + RUM INTEGRATION)
-// ==========================================================================
-
 /**
- * [BOILERPLATE - EDS #14] PHASE 1: EAGER LOADING
- * Loads high-priority above-the-fold content to reach Largest Contentful Paint (LCP) immediately.
- * @param {Element} doc The document element
+ * Loads everything needed to get to LCP.
+ * @param {Element} doc The container element
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
-
-  // ----------------------------------------------------------------------
-  // RUM CHECKPOINT 1: Top of Page & Initial Load Telemetry
-  // Measures Time to First Byte (TTFB) and initial view initialization.
-  // ----------------------------------------------------------------------
-  sampleRUM('top');
-
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
@@ -253,7 +153,7 @@ async function loadEager(doc) {
   }
 
   try {
-    /* If desktop or fonts already cached in sessionStorage, load fonts.css immediately */
+    /* if desktop (proxy for fast connection) or fonts already loaded, load fonts.css */
     if (window.innerWidth >= 900 || sessionStorage.getItem('fonts-loaded')) {
       loadFonts();
     }
@@ -263,9 +163,8 @@ async function loadEager(doc) {
 }
 
 /**
- * [BOILERPLATE - EDS #14] PHASE 2: LAZY LOADING
- * Loads secondary elements: Header, Footer, below-the-fold sections, lazy CSS, and fonts.
- * @param {Element} doc The document element
+ * Loads everything that doesn't need to be delayed.
+ * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
   loadHeader(doc.querySelector('header'));
@@ -281,59 +180,22 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
-
-  // ----------------------------------------------------------------------
-  // RUM CHECKPOINT 2: Core Web Vitals (CWV) Telemetry
-  // Measures site-wide LCP, CLS, and INP metrics across all loaded blocks.
-  // ----------------------------------------------------------------------
-  sampleRUM('cwv');
 }
 
 /**
- * [BOILERPLATE - EDS #14] PHASE 3: DELAYED LOADING
- * Postpones non-critical tasks (analytics, chatbots, tracking scripts) by 3 seconds 
- * so they don't impact Core Web Vitals or user interaction.
+ * Loads everything that happens a lot later,
+ * without impacting the user experience.
  */
 function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
-  window.setTimeout(() => {
-    // ----------------------------------------------------------------------
-    // RUM CHECKPOINT 3: Delayed Session & Interaction Depth
-    // Captures scroll depth and deferred engagement telemetry.
-    // ----------------------------------------------------------------------
-    sampleRUM('lazy');
-
-    import('./delayed.js');
-  }, 3000);
+  window.setTimeout(() => import('./delayed.js'), 3000);
+  // load anything that can be postponed to the latest here
 }
 
-/**
- * [BOILERPLATE - DEFAULT]
- * Main Entry Point: Sequentially triggers Eager -> Lazy -> Delayed execution pipeline.
- */
 async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
 }
 
-// Start the page execution pipeline
 loadPage();
-
-// ==========================================================================
-// 5. LIVE API & PAYLOAD DEBUGGING EXERCISE
-// ==========================================================================
-async function testApiPayload() {
-  const apiUrl = 'https://dummyjson.com/products/1';
-  
-  debugger; // 1. Browser freezes execution here
-  
-  const response = await fetch(apiUrl);
-  
-  debugger; // 2. Browser freezes after network request completes
-  
-  const payload = await response.json();
-  console.log('Decoded Payload Object:', payload);
-}
-
-testApiPayload();
