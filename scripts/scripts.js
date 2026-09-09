@@ -319,3 +319,21 @@ async function loadPage() {
 
 // Start the page execution pipeline
 loadPage();
+
+// ==========================================================================
+// 5. LIVE API & PAYLOAD DEBUGGING EXERCISE
+// ==========================================================================
+async function testApiPayload() {
+  const apiUrl = 'https://dummyjson.com/products/1';
+  
+  debugger; // 1. Browser freezes execution here
+  
+  const response = await fetch(apiUrl);
+  
+  debugger; // 2. Browser freezes after network request completes
+  
+  const payload = await response.json();
+  console.log('Decoded Payload Object:', payload);
+}
+
+testApiPayload();
