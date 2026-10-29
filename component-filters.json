@@ -53,6 +53,18 @@
     ]
   },
   {
+    "id": "faq-accordion",
+    "components": [
+      "faq-accordion-item"
+    ]
+  },
+  {
+    "id": "product-grid",
+    "components": [
+      "product-grid-item"
+    ]
+  },
+  {
     "id": "stats",
     "components": [
       "stat-item"

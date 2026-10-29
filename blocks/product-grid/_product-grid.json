@@ -1,0 +1,81 @@
+
+{
+  "definitions": [
+    {
+      "title": "Product Grid",
+      "id": "product-grid",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Product Grid",
+              "filter": "product-grid"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Product Grid Item",
+      "id": "product-grid-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Product Grid Item",
+              "model": "product-grid-item"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "product-grid-item",
+      "fields": [
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "image",
+          "label": "Product Image",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "productName",
+          "label": "Product Name"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "price",
+          "label": "Price"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "linkText",
+          "label": "Link Text"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "linkUrl",
+          "label": "Product URL"
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "product-grid",
+      "components": [
+        "product-grid-item"
+      ]
+    }
+  ]
+}

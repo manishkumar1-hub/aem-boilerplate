@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beginner Coding and AEM Authoring Guide</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 40px;
+      color: #222;
+    }
+    h1, h2, h3 { color: #111; }
+    pre {
+      background: #f5f5f5;
+      padding: 12px;
+      border-radius: 8px;
+      overflow-x: auto;
+      border: 1px solid #ddd;
+    }
+    code {
+      font-family: Consolas, monospace;
+      background: #f0f0f0;
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+    ul, ol { margin-left: 20px; }
+    .section { margin-bottom: 30px; }
+  </style>
+</head>
+<body>
+  <h1>Beginner Coding and AEM Authoring Guide</h1>
+  <p>This guide is made for someone who is starting from basic coding and wants to understand the project structure, code quality improvement areas, and authoring plan for this AEM site.</p>
+
+  <div class="section">
+    <h2>1) Beginner JavaScript code snippets with explanations</h2>
+    <h3>Example 1: Variables and conditions</h3>
+    <pre><code>let age = 22;
+let name = "Aman";
+let isStudent = true;
+
+if (age >= 18) {
+  console.log(name + " is an adult.");
+} else {
+  console.log(name + " is not an adult.");
+}</code></pre>
+    <p><strong>Explanation:</strong> <code>let</code> stores values. <code>if</code> checks a condition and runs code when true.</p>
+    <p><strong>Output:</strong></p>
+    <pre><code>Aman is an adult.</code></pre>
+
+    <h3>Example 2: Function with return value</h3>
+    <pre><code>function greet(personName) {
+  return "Hello, " + personName + "!";
+}
+
+console.log(greet("Priya"));
+console.log(greet("Rohit"));</code></pre>
+    <p>A function is reusable code.</p>
+
+    <h3>Example 3: For loop</h3>
+    <pre><code>for (let i = 1; i <= 5; i++) {
+  console.log("Number:", i);
+}</code></pre>
+    <p>The loop repeats until <code>i</code> reaches 5.</p>
+
+    <h3>Example 4: Array and map</h3>
+    <pre><code>let marks = [80, 90, 70, 95];
+let doubled = marks.map((mark) => mark * 2);
+console.log(doubled);</code></pre>
+    <p><code>map()</code> transforms each item in an array.</p>
+
+    <h3>Example 5: Object</h3>
+    <pre><code>let student = {
+  name: "Karan",
+  age: 21,
+  course: "Computer Science"
+};
+
+console.log(student.name);
+console.log(student["age"]);</code></pre>
+    <p>Objects store data as key-value pairs.</p>
+
+    <h3>Example 6: Find largest number</h3>
+    <pre><code>let numbers = [12, 5, 98, 34, 76];
+let maxNumber = numbers[0];
+
+for (let i = 1; i < numbers.length; i++) {
+  if (numbers[i] > maxNumber) {
+    maxNumber = numbers[i];
+  }
+}
+
+console.log("Largest number is:", maxNumber);</code></pre>
+
+    <h3>Example 7: Reverse a string</h3>
+    <pre><code>function reverseString(str) {
+  let reversed = "";
+  for (let i = str.length - 1; i >= 0; i--) {
+    reversed += str[i];
+  }
+  return reversed;
+}
+
+console.log(reverseString("hello"));</code></pre>
+  </div>
+
+  <div class="section">
+    <h2>2) Code quality analysis of the project blocks</h2>
+    <p>I reviewed the block folders and project patterns. Overall, the codebase is a good learning project with several helpful patterns, but it needs improvement in maintainability, reusability, and production quality.</p>
+
+    <h3>What is already good</h3>
+    <ul>
+      <li>Block-based structure is clean and consistent.</li>
+      <li>Project uses modular JavaScript block files.</li>
+      <li>Some files use safe DOM creation patterns.</li>
+      <li>Several blocks follow the AEM authoring pattern well.</li>
+      <li>Use of optimized image creation is good.</li>
+    </ul>
+
+    <h3>Main quality gaps</h3>
+    <ul>
+      <li>Hard-coded demo data in product and cart blocks.</li>
+      <li>Too much inline styling.</li>
+      <li>Global state and window event side effects.</li>
+      <li>Weak error handling.</li>
+      <li>Accessibility gaps.</li>
+      <li>Duplicate logic across blocks.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>3) Block-by-block improvement areas</h2>
+    <ul>
+      <li><strong>Header:</strong> reduce inline CSS, split logic, improve accessibility.</li>
+      <li><strong>Product details:</strong> move data to author config, reduce hard-coded values.</li>
+      <li><strong>Product card:</strong> use real data, graceful fallback.</li>
+      <li><strong>Search:</strong> improve filter state and accessibility.</li>
+      <li><strong>Faceted search:</strong> split large logic into helpers.</li>
+      <li><strong>Cards / accordion / tabs:</strong> focus on semantics and responsive behavior.</li>
+      <li><strong>Footer / fragment:</strong> improve stable link handling and fallback states.</li>
+      <li><strong>Localized CTA / personalized fragment:</strong> validate audience data and handle network failures.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>4) Page authoring plan for document authoring</h2>
+    <h3>Main page types to create</h3>
+    <ol>
+      <li>Home page - hero, cards, stats, testimonials, CTA, FAQ</li>
+      <li>Product listing page - search, filters, cards</li>
+      <li>Product detail page - product details, related cards, tabs</li>
+      <li>About page - columns, quote, stats, tabs</li>
+      <li>Blog/content page - search and cards</li>
+      <li>Contact/support page - FAQ, columns, embeds</li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <h2>5) What to add on each page</h2>
+    <ul>
+      <li>Clear heading hierarchy</li>
+      <li>One goal per page</li>
+      <li>Strong CTA text</li>
+      <li>Consistent spacing and visuals</li>
+      <li>Fallback content when a field is missing</li>
+      <li>Accessible keyboard and semantic structure</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>6) Final advice</h2>
+    <p>Focus on logic, reading code line by line, testing small examples, and improving readability. For this project, the best improvement areas are: reduce hardcoded values, clean inline styles, improve accessibility, add graceful fallback states, and separate large logic blocks into reusable functions.</p>
+  </div>
+</body>
+</html>
