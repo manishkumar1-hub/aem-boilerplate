@@ -5,45 +5,47 @@ import './faq-accordion.css';
 
 export default function decorate(block) {
   const rows = [...block.children];
-  const list = document.createElement('div');
-  list.className = 'faq-accordion-list';
 
-  rows.forEach((row, index) => {
+  rows.forEach((row) => {
     const cells = [...row.children];
-    const question = cells[0]?.textContent.trim() || '';
-    const answer = cells[1]?.textContent.trim() || '';
 
-    if (!question) return;
+    if (cells.length < 2) return;
 
-    const item = document.createElement('section');
-    item.className = 'faq-accordion-item';
+    const questionDiv = cells[0];
+    const answerDiv = cells[1];
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'accordion-item';
 
     const button = document.createElement('button');
+    button.className = 'accordion-question';
     button.type = 'button';
-    button.className = 'faq-accordion-question';
-    button.textContent = question;
+    button.textContent = questionDiv.textContent.trim();
     button.setAttribute('aria-expanded', 'false');
-    button.setAttribute('aria-controls', `faq-panel-${index}`);
+
+    const icon = document.createElement('span');
+    icon.className = 'accordion-icon';
+    icon.setAttribute('aria-hidden', 'true');
+    icon.textContent = '+';
+    button.append(icon);
 
     const panel = document.createElement('div');
-    panel.id = `faq-panel-${index}`;
-    panel.className = 'faq-accordion-answer';
+    panel.className = 'accordion-answer';
+    panel.id = `accordion-panel-${Math.random().toString(36).slice(2, 9)}`;
+    panel.append(...answerDiv.childNodes);
     panel.hidden = true;
 
-    const paragraph = document.createElement('p');
-    paragraph.textContent = answer;
-    panel.append(paragraph);
+    button.setAttribute('aria-controls', panel.id);
 
     button.addEventListener('click', () => {
-      const expanded = button.getAttribute('aria-expanded') === 'true';
+      const isOpen = button.getAttribute('aria-expanded') === 'true';
 
-      button.setAttribute('aria-expanded', String(!expanded));
-      panel.hidden = expanded;
+      button.setAttribute('aria-expanded', String(!isOpen));
+      panel.hidden = isOpen;
+      icon.textContent = isOpen ? '+' : '−';
     });
 
-    item.append(button, panel);
-    list.append(item);
+    wrapper.append(button, panel);
+    row.replaceWith(wrapper);
   });
-
-  block.replaceChildren(list);
 }
