@@ -5,42 +5,41 @@
   align-items: center;
   gap: 32px;
   padding: 48px 24px;
-  background: #f4f7fb;
-  border-radius: 12px;
+  margin: 24px 0;
+  background: #f3f6fb;
+  border-radius: 16px;
+}
+
+.hero-content {
+  min-width: 0;
 }
 
 .hero-content h1 {
-  font-size: clamp(2rem, 4vw, 3.5rem);
-  line-height: 1.1;
-  margin: 0 0 16px;
+  margin: 0 0 20px;
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.15;
 }
 
 .hero-content p {
-  font-size: 1.1rem;
+  margin: 0 0 24px;
+  font-size: 18px;
   line-height: 1.6;
 }
 
-.hero-button {
-  display: inline-block;
-  padding: 12px 22px;
-  margin-top: 12px;
-  background: #174ea6;
-  color: white;
-  text-decoration: none;
-  border-radius: 6px;
+.hero-image {
+  width: 100%;
 }
 
-.hero-image img {
+.hero-image img,
+.hero-image picture {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 12px;
 }
 
 @media (max-width: 700px) {
   .hero {
     grid-template-columns: 1fr;
-    padding: 28px 16px;
+    padding: 28px 20px;
   }
 }
-
