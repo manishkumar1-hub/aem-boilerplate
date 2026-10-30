@@ -1,7 +1,7 @@
 /**
  * embedd Block - Converts YouTube links into responsive lazy-loaded video players.
  */
-import './hero.css';
+// import './hero.css';
 
 export default function decorate(block) {
   const rows = [...block.children];

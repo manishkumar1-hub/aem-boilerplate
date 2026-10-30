@@ -1,0 +1,45 @@
+
+.api-cards > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
+  gap: 24px;
+}
+
+.api-cards > ul > li {
+  border: 1px solid #dadada;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--background-color);
+}
+
+.api-cards-image {
+  line-height: 0;
+}
+
+.api-cards-image img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+}
+
+.api-cards-content {
+  margin: 16px;
+}
+
+.api-cards-content h3 {
+  font-size: 18px;
+}
+
+.api-cards-price {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  .api-cards > ul {
+    grid-template-columns: 1fr;
+  }
+}
