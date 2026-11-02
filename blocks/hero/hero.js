@@ -1,18 +1,23 @@
 /**
  * embedd Block - Converts YouTube links into responsive lazy-loaded video players.
  */
-// import './hero.css';
-
 export default function decorate(block) {
   const rows = [...block.children];
 
-  // Read the authored content from each row.
+  // Read the authored content
   const heading = rows[0]?.textContent.trim() || '';
   const description = rows[1]?.textContent.trim() || '';
   const link = rows[2]?.querySelector('a');
   const image = rows[3]?.querySelector('img');
 
-  // Build the hero content.
+  // Read the block variant
+  const variant = [...block.classList]
+    .find((className) => ['dark', 'center'].includes(className)) || 'default';
+
+  // Add the variant class
+  block.classList.add(`hero-${variant}`);
+
+  // Create content container
   const content = document.createElement('div');
   content.className = 'hero-content';
 
@@ -34,14 +39,14 @@ export default function decorate(block) {
     content.append(button);
   }
 
-  block.replaceChildren();
+  // Create image container
+  const visual = document.createElement('div');
+  visual.className = 'hero-image';
 
   if (image) {
-    const visual = document.createElement('div');
-    visual.className = 'hero-image';
     visual.append(image);
-    block.append(content, visual);
-  } else {
-    block.append(content);
   }
+
+  // Replace original content
+  block.replaceChildren(content, visual);
 }
