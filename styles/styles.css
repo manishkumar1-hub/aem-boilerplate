@@ -327,52 +327,47 @@ main .section.highlight {
    Section Metadata Custom Styles (EDS #15)
    ========================================================================== */
 
-/* 1. Dark Hero Section */
-main .section.dark {
+
+/* ==========================================================================
+   Section Metadata Custom Styles
+   ========================================================================== */
+
+/* Dark variant */
+main .dark {
   background-color: #0f172a;
   color: #f8fafc;
   padding: 3rem 1.5rem;
-  border-bottom: 2px solid #1e293b;
 }
 
-main .section.dark .pdp-title {
-  color: #ffffff;
-}
-
-main .section.dark .pdp-description,
-main .section.dark .pdp-sku {
-  color: #94a3b8;
-}
-
-main .section.dark label {
-  color: #cbd5e1;
-}
-
-/* 2. Light Gray Accent Section */
-main .section.light-bg {
-  background-color: #f8fafc;
+/* Light pink section */
+main .light-bg {
+  background-color: #fce4ec;
   color: #0f172a;
   padding: 3.5rem 1.5rem;
-  max-width: 1050px;
-  margin: 0 auto;
-  border-radius: 12px;
+  max-width: 100%;
+  margin: 0;
+  border-radius: 0;
 }
 
-/* 3. Highlight Border Modifier */
-main .section.highlight-left {
-  border-left: 6px solid #0066cc;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  margin-top: 2rem;
-  margin-bottom: 3rem;
+/* Multiple section classes */
+
+main .light-bg.highlight-left {
+  background-color: #fce4ec;
+  border-left: 8px solid #ec4899 !important;
+  box-shadow: 0 8px 25px rgba(236, 72, 153, 0.20);
+  padding: 3.5rem 1.5rem;
+  box-sizing: border-box;
 }
 
-main .section.light-bg h3 {
+/* Section headings */
+main .light-bg h3 {
   margin-top: 0;
   font-size: 1.8rem;
   color: #0066cc;
 }
 
-main .section.light-bg ul {
+/* Section lists */
+main .light-bg ul {
   line-height: 1.8;
   font-size: 1.05rem;
 }
@@ -397,4 +392,10 @@ main .announcement {
 
 main .announcement p {
   margin: 0;
+}
+/* Multiple section classes */
+main .section.light-bg.highlight-left {
+  background-color: #fce4ec;
+  border-left: 6px solid #ec4899;
+  box-shadow: 0 8px 25px rgba(236, 72, 153, 0.12);
 }
