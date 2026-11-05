@@ -270,3 +270,67 @@ header nav .nav-sections ul > li > ul > li {
 header nav .nav-tools {
   grid-area: tools;
 }
+
+/* ShopSphere header branding */
+header .nav-wrapper {
+  background-color: #102a43;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+}
+
+header nav {
+  color: #ffffff;
+  min-height: 76px;
+}
+
+header .nav-brand {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+header .nav-brand a {
+  color: #55d6c2;
+  text-decoration: none;
+}
+
+header nav .nav-sections ul {
+  font-size: 15px;
+  gap: 28px;
+}
+
+header nav .nav-sections a {
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+header nav .nav-sections a:hover {
+  color: #55d6c2;
+}
+
+header nav .nav-tools {
+  display: flex;
+  align-items: center;
+}
+
+header nav .mini-cart-badge {
+  background-color: #55d6c2 !important;
+  color: #102a43 !important;
+  font-weight: 700;
+}
+
+@media (max-width: 899px) {
+  header nav[aria-expanded='true'] {
+    background-color: #102a43;
+  }
+
+  header nav .nav-hamburger button {
+    background-color: #102a43;
+    color: #ffffff;
+  }
+
+  header nav .nav-sections ul {
+    gap: 18px;
+  }
+}
