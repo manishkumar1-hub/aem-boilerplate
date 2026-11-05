@@ -1,20 +1,179 @@
+
+/* =================================
+   ShopSphere Footer
+================================= */
+
 footer {
-  background-color: var(--light-color);
-  font-size: var(--body-font-size-xs);
+  width: 100%;
+  margin-top: 60px;
 }
 
+footer .footer {
+  background-color: #102a43;
+  color: #ffffff;
+  padding: 55px 24px 20px;
+  box-sizing: border-box;
+}
+
+/* Footer content width */
+footer .footer .default-content-wrapper,
 footer .footer > div {
-  margin: auto;
   max-width: 1200px;
-  padding: 40px 24px 24px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
 }
 
+/* Brand name */
+footer .footer h1,
+footer .footer h2 {
+  color: #55d6c2;
+  font-size: 30px;
+  font-weight: 800;
+  margin: 0 0 12px;
+}
+
+/* Tagline */
 footer .footer p {
-  margin: 0;
+  color: #d5e4ef;
+  line-height: 1.7;
 }
 
-@media (width >= 900px) {
-  footer .footer > div {
-    padding: 40px 32px 24px;
+/* Footer columns */
+footer .footer .columns {
+  margin-top: 32px;
+  margin-bottom: 35px;
+}
+
+footer .footer .columns > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 48px;
+  align-items: start;
+}
+
+footer .footer .columns > div > div {
+  min-width: 0;
+}
+
+/* Column content */
+footer .footer .columns p {
+  margin: 0 0 14px;
+  line-height: 1.7;
+}
+
+/* Column headings */
+footer .footer .columns strong {
+  display: inline-block;
+  color: #55d6c2;
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+/* Footer links */
+footer .footer a {
+  color: #d5e4ef;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+footer .footer a:hover {
+  color: #55d6c2;
+}
+
+/* Footer table, if present */
+footer .footer table {
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+  margin: 30px 0;
+  background: transparent;
+}
+
+footer .footer table th,
+footer .footer table td {
+  border: none;
+  text-align: left;
+  vertical-align: top;
+  padding: 8px 20px 8px 0;
+  width: 33.33%;
+  color: #d5e4ef;
+  font-size: 14px;
+}
+
+/* Copyright */
+footer .footer > div > p:last-child {
+  text-align: center;
+  border-top: 1px solid #49677f;
+  padding-top: 20px;
+  margin-top: 25px;
+  font-size: 13px;
+  color: #b8cbd9;
+}
+
+/* =================================
+   Tablet and Mobile Responsive
+================================= */
+
+@media (max-width: 900px) {
+
+  footer .footer {
+    padding: 40px 24px 20px;
+  }
+
+  /* Stack footer columns vertically */
+  footer .footer .columns > div {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  footer .footer .columns {
+    margin-top: 25px;
+    margin-bottom: 25px;
+  }
+
+  footer .footer h1,
+  footer .footer h2 {
+    font-size: 26px;
+  }
+
+  /* Stack table cells if a table is used */
+  footer .footer table,
+  footer .footer table tbody,
+  footer .footer table tr,
+  footer .footer table td {
+    display: block;
+    width: 100%;
+  }
+
+  footer .footer table td {
+    padding: 8px 0;
+  }
+  footer .footer .columns p {
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+}
+
+/* Small mobile screens */
+@media (max-width: 480px) {
+
+  footer .footer {
+    padding: 32px 20px 18px;
+  }
+
+  footer .footer h1,
+  footer .footer h2 {
+    font-size: 24px;
+  }
+
+  footer .footer .columns > div {
+    gap: 20px;
+  }
+
+  footer .footer .columns strong {
+    font-size: 16px;
   }
 }

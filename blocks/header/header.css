@@ -1,11 +1,18 @@
-/* header and nav layout */
+
+/* ========================================
+   SHOPSPHERE HEADER AND NAVIGATION
+======================================== */
+
+/* Header wrapper */
 header .nav-wrapper {
-  background-color: var(--background-color);
+  background-color: #102a43;
   width: 100%;
   z-index: 2;
   position: fixed;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
 }
 
+/* Main navigation layout */
 header nav {
   box-sizing: border-box;
   display: grid;
@@ -17,10 +24,13 @@ header nav {
   margin: auto;
   max-width: 1248px;
   height: var(--nav-height);
+  min-height: 76px;
   padding: 0 24px;
   font-family: var(--body-font-family);
+  color: #ffffff;
 }
 
+/* Expanded mobile navigation */
 header nav[aria-expanded='true'] {
   grid-template:
     'hamburger brand' var(--nav-height)
@@ -28,25 +38,7 @@ header nav[aria-expanded='true'] {
     'tools tools' var(--nav-height) / auto 1fr;
   overflow-y: auto;
   min-height: 100dvh;
-}
-
-@media (width >= 900px) {
-  header .nav-wrapper {
-    position: relative;
-  }
-
-  header nav {
-    display: flex;
-    justify-content: space-between;
-    gap: 0 32px;
-    max-width: 1264px;
-    padding: 0 32px;
-  }
-
-  header nav[aria-expanded='true'] {
-    min-height: 0;
-    overflow: visible;
-  }
+  background-color: #102a43;
 }
 
 header nav p {
@@ -58,7 +50,10 @@ header nav a:any-link {
   color: currentcolor;
 }
 
-/* hamburger */
+/* ========================================
+   HAMBURGER MENU
+======================================== */
+
 header nav .nav-hamburger {
   grid-area: hamburger;
   height: 22px;
@@ -72,8 +67,8 @@ header nav .nav-hamburger button {
   border: 0;
   border-radius: 0;
   padding: 0;
-  background-color: var(--background-color);
-  color: inherit;
+  background-color: #102a43;
+  color: #ffffff;
   overflow: initial;
   text-overflow: initial;
   white-space: initial;
@@ -132,20 +127,22 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
   transform: rotate(-45deg);
 }
 
-@media (width >= 900px) {
-  header nav .nav-hamburger {
-    display: none;
-    visibility: hidden;
-  }
-}
+/* ========================================
+   BRAND - SHOPSPHERE
+======================================== */
 
-/* brand */
 header .nav-brand {
   grid-area: brand;
   flex-basis: 128px;
-  font-size: var(--heading-font-size-s);
-  font-weight: 700;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
   line-height: 1;
+}
+
+header .nav-brand a {
+  color: #55d6c2;
+  text-decoration: none;
 }
 
 header nav .nav-brand img {
@@ -153,7 +150,10 @@ header nav .nav-brand img {
   height: auto;
 }
 
-/* sections */
+/* ========================================
+   NAVIGATION SECTIONS
+======================================== */
+
 header nav .nav-sections {
   grid-area: sections;
   flex: 1 1 auto;
@@ -170,7 +170,7 @@ header nav[aria-expanded='true'] .nav-sections {
 header nav .nav-sections ul {
   list-style: none;
   padding-left: 0;
-  font-size: var(--body-font-size-s);
+  font-size: 15px;
 }
 
 header nav .nav-sections ul > li {
@@ -185,119 +185,6 @@ header nav .nav-sections ul > li > ul > li {
   font-weight: 400;
 }
 
-@media (width >= 900px) {
-  header nav .nav-sections {
-    display: block;
-    visibility: visible;
-    white-space: nowrap;
-  }
-
-  header nav[aria-expanded='true'] .nav-sections {
-    align-self: unset;
-  }
-
-  header nav .nav-sections .nav-drop {
-    position: relative;
-    padding-right: 16px;
-    cursor: pointer;
-  }
-
-  header nav .nav-sections .nav-drop::after {
-    content: '';
-    display: inline-block;
-    position: absolute;
-    top: 0.5em;
-    right: 2px;
-    transform: rotate(135deg);
-    width: 6px;
-    height: 6px;
-    border: 2px solid currentcolor;
-    border-radius: 0 1px 0 0;
-    border-width: 2px 2px 0 0;
-  }
-
-  header nav .nav-sections .nav-drop[aria-expanded='true']::after {
-    top: unset;
-    bottom: 0.5em;
-    transform: rotate(315deg);
-  }
-
-  header nav .nav-sections ul {
-    display: flex;
-    gap: 24px;
-    margin: 0;
-  }
-
-  header nav .nav-sections .default-content-wrapper > ul > li {
-    flex: 0 1 auto;
-    position: relative;
-  }
-
-  header nav .nav-sections .default-content-wrapper > ul > li > ul {
-    display: none;
-    position: relative;
-  }
-
-  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] > ul {
-    display: block;
-    position: absolute;
-    left: -24px;
-    width: 200px;
-    top: 150%;
-    padding: 16px;
-    background-color: var(--light-color);
-    white-space: initial;
-  }
-
-  header nav .nav-sections .default-content-wrapper > ul > li > ul::before {
-    content: '';
-    position: absolute;
-    top: -8px;
-    left: 16px;
-    width: 0;
-    height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 8px solid var(--light-color);
-  }
-
-  header nav .nav-sections .default-content-wrapper > ul > li > ul > li {
-    padding: 8px 0;
-  }
-}
-
-/* tools */
-header nav .nav-tools {
-  grid-area: tools;
-}
-
-/* ShopSphere header branding */
-header .nav-wrapper {
-  background-color: #102a43;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
-}
-
-header nav {
-  color: #ffffff;
-  min-height: 76px;
-}
-
-header .nav-brand {
-  font-size: 26px;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-}
-
-header .nav-brand a {
-  color: #55d6c2;
-  text-decoration: none;
-}
-
-header nav .nav-sections ul {
-  font-size: 15px;
-  gap: 28px;
-}
-
 header nav .nav-sections a {
   color: #ffffff;
   font-weight: 600;
@@ -309,7 +196,80 @@ header nav .nav-sections a:hover {
   color: #55d6c2;
 }
 
+/* Dropdown menu */
+header nav .nav-sections .nav-drop {
+  position: relative;
+  padding-right: 16px;
+  cursor: pointer;
+}
+
+header nav .nav-sections .nav-drop::after {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: 0.5em;
+  right: 2px;
+  transform: rotate(135deg);
+  width: 6px;
+  height: 6px;
+  border: 2px solid currentcolor;
+  border-radius: 0 1px 0 0;
+  border-width: 2px 2px 0 0;
+}
+
+header nav .nav-sections .nav-drop[aria-expanded='true']::after {
+  top: unset;
+  bottom: 0.5em;
+  transform: rotate(315deg);
+}
+
+header nav .nav-sections .default-content-wrapper > ul > li {
+  flex: 0 1 auto;
+  position: relative;
+}
+
+header nav .nav-sections .default-content-wrapper > ul > li > ul {
+  display: none;
+  position: relative;
+}
+
+header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] > ul {
+  display: block;
+  position: absolute;
+  left: -24px;
+  width: 200px;
+  top: 150%;
+  padding: 16px;
+  background-color: #ffffff;
+  white-space: initial;
+}
+
+header nav .nav-sections .default-content-wrapper > ul > li > ul::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 16px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #ffffff;
+}
+
+header nav .nav-sections .default-content-wrapper > ul > li > ul > li {
+  padding: 8px 0;
+}
+
+header nav .nav-sections .default-content-wrapper > ul > li > ul a {
+  color: #102a43;
+}
+
+/* ========================================
+   CART / NAVIGATION TOOLS
+======================================== */
+
 header nav .nav-tools {
+  grid-area: tools;
   display: flex;
   align-items: center;
 }
@@ -320,7 +280,77 @@ header nav .mini-cart-badge {
   font-weight: 700;
 }
 
+/* ========================================
+   DESKTOP LAYOUT
+======================================== */
+
+@media (min-width: 900px) {
+
+  header .nav-wrapper {
+    position: relative;
+  }
+
+  /* Three-column layout:
+     Brand | Center navigation | Cart */
+  header nav {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-areas: 'brand sections tools';
+    justify-content: initial;
+    align-items: center;
+    gap: 0;
+    max-width: 1264px;
+    padding: 0 32px;
+  }
+
+  header nav[aria-expanded='true'] {
+    min-height: 76px;
+    overflow: visible;
+  }
+
+  /* Brand stays on the left */
+  header nav .nav-brand {
+    justify-self: start;
+  }
+
+  /* Navigation stays in the centre */
+  header nav .nav-sections {
+    display: block;
+    visibility: visible;
+    justify-self: center;
+    white-space: nowrap;
+  }
+
+  header nav[aria-expanded='true'] .nav-sections {
+    align-self: center;
+  }
+
+  header nav .nav-sections ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    margin: 0;
+  }
+
+  /* Cart stays on the right */
+  header nav .nav-tools {
+    justify-self: end;
+  }
+
+  /* Hide mobile hamburger */
+  header nav .nav-hamburger {
+    display: none;
+    visibility: hidden;
+  }
+}
+
+/* ========================================
+   MOBILE RESPONSIVE DESIGN
+======================================== */
+
 @media (max-width: 899px) {
+
   header nav[aria-expanded='true'] {
     background-color: #102a43;
   }
@@ -331,6 +361,87 @@ header nav .mini-cart-badge {
   }
 
   header nav .nav-sections ul {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 18px;
+  }
+
+  header nav .nav-sections a {
+    font-size: 16px;
+  }
+
+  header nav .nav-tools {
+    justify-self: start;
+  }
+}
+
+/* FIX: ShopSphere desktop header alignment */
+
+@media (min-width: 900px) {
+  header .nav-wrapper {
+    position: relative;
+    width: 100%;
+    background-color: #102a43;
+  }
+
+  header nav {
+    display: grid !important;
+
+    /* All three sections in ONE row */
+    grid-template:
+      "brand sections tools" 76px
+      / minmax(0, 1fr) auto minmax(0, 1fr) !important;
+
+    align-items: center;
+    justify-content: initial;
+    height: 76px;
+    min-height: 76px;
+    padding: 0 32px;
+    gap: 0;
+    color: #ffffff;
+  }
+
+  /* Brand on the left */
+  header nav .nav-brand {
+    grid-area: brand;
+    justify-self: start;
+    align-self: center;
+    margin: 0;
+  }
+
+  /* Navigation exactly in the middle */
+  header nav .nav-sections {
+    grid-area: sections;
+    display: block;
+    visibility: visible;
+    justify-self: center;
+    align-self: center;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  header nav .nav-sections ul {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Cart on the right */
+  header nav .nav-tools {
+    grid-area: tools;
+    justify-self: end;
+    align-self: center;
+    display: flex;
+    margin: 0;
+  }
+
+  /* Hide hamburger on desktop */
+  header nav .nav-hamburger {
+    display: none;
   }
 }
