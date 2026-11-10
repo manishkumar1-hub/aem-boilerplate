@@ -2,6 +2,10 @@
  * embedd Block - Converts YouTube links into responsive lazy-loaded video players.
  */
 
+/**
+ * Hero Block - Displays hero content with default fallback values.
+ */
+
 export default function decorate(block) {
   const rows = [...block.children];
 
@@ -12,7 +16,7 @@ export default function decorate(block) {
     return cells[0]?.textContent.trim().toLowerCase() === 'style';
   });
 
-  // Read the variant name from the second cell
+  // Read the variant name
   const styleCells = styleRow ? [...styleRow.children] : [];
 
   const variant = styleCells[1]?.textContent.trim().toLowerCase()
@@ -21,9 +25,13 @@ export default function decorate(block) {
   // Remove the style row from content processing
   const contentRows = rows.filter((row) => row !== styleRow);
 
-  // Read Hero content
-  const heading = contentRows[0]?.textContent.trim() || '';
-  const description = contentRows[1]?.textContent.trim() || '';
+  // Read authored Hero content or use fallback values
+  const heading = contentRows[0]?.textContent.trim()
+    || 'Welcome to ShopSphere';
+
+  const description = contentRows[1]?.textContent.trim()
+    || 'Discover products that match your style and everyday needs.';
+
   const link = contentRows[2]?.querySelector('a');
   const image = contentRows[3]?.querySelector('img');
 
@@ -41,20 +49,16 @@ export default function decorate(block) {
   content.append(title);
 
   // Create description
-  if (description) {
-    const paragraph = document.createElement('p');
-    paragraph.textContent = description;
-    content.append(paragraph);
-  }
+  const paragraph = document.createElement('p');
+  paragraph.textContent = description;
+  content.append(paragraph);
 
   // Create CTA button
-  if (link) {
-    const button = document.createElement('a');
-    button.className = 'hero-button';
-    button.href = link.href;
-    button.textContent = link.textContent.trim();
-    content.append(button);
-  }
+  const button = document.createElement('a');
+  button.className = 'hero-button';
+  button.href = link?.href || '/products';
+  button.textContent = link?.textContent.trim() || 'Explore Products';
+  content.append(button);
 
   // Create image container
   const visual = document.createElement('div');
