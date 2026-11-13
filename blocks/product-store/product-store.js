@@ -1,34 +1,59 @@
 /**
  * embedd Block - Converts YouTube links into responsive lazy-loaded video players.
  */
+
+/**
+ * Product Store Block
+ *
+ * Features:
+ * 1. Display Products
+ * 2. Search Products
+ * 3. Add to Cart
+ * 4. Remove from Cart
+ * 5. Increase Quantity
+ * 6. Decrease Quantity
+ * 7. Calculate Cart Total
+ * 8. Save Cart using localStorage
+ */
+
+// Main EDS block decoration function
 export default function decorate(block) {
-  // Step 1: Get product rows from the block
+  // STEP 1: Get product rows from Google Docs
   const rows = [...block.children];
   const productRows = rows.slice(1);
 
-  // Step 2: Create main container
+  // STEP 2: Create main container
   const container = document.createElement('div');
   container.className = 'product-store-container';
 
-  // Step 3: Create search input
+  // STEP 3: Create search input
   const search = document.createElement('input');
   search.type = 'search';
   search.placeholder = 'Search products...';
   search.className = 'product-search';
   search.setAttribute('aria-label', 'Search products');
 
-  // Step 4: Create cart summary
+  // STEP 4: Create cart summary
   const cartSummary = document.createElement('div');
   cartSummary.className = 'cart-summary';
 
-  // Step 5: Create product grid
+  // STEP 5: Create cart items container
+  const cartItems = document.createElement('div');
+  cartItems.className = 'cart-items';
+
+  // STEP 6: Create product grid
   const productGrid = document.createElement('div');
   productGrid.className = 'product-grid';
 
-  // Step 6: Add elements to container
-  container.append(search, cartSummary, productGrid);
+  // STEP 7: Add elements to main container
+  container.append(
+    search,
+    cartSummary,
+    cartItems,
+    productGrid,
+  );
 
-  // Step 7: Read product data from Google Docs
+  // STEP 8: Read product data from Google Docs
   const products = productRows
     .filter((row) => row.children.length >= 3)
     .map((row, index) => {
@@ -47,62 +72,243 @@ export default function decorate(block) {
         image: image ? image.src : '',
       };
     })
-    .filter((product) => product.name && Number.isFinite(product.price));
+    .filter((product) => (
+      product.name
+      && Number.isFinite(product.price)
+      && product.price >= 0
+    ));
 
-  // Step 8: Create cart array
-  const cart = [];
+  // STEP 9: Retrieve previously saved cart
+  let cart = [];
 
-  // Step 9: Update cart summary
+  try {
+    const savedCart = JSON.parse(
+      localStorage.getItem('eds_cart'),
+    );
+
+    if (Array.isArray(savedCart)) {
+      cart = savedCart.filter((item) => (
+        item
+        && Number.isFinite(item.id)
+        && typeof item.name === 'string'
+        && Number.isFinite(item.price)
+        && Number.isFinite(item.quantity)
+        && item.quantity > 0
+      ));
+    }
+  } catch (error) {
+    cart = [];
+  }
+
+  // STEP 10: Update cart and display cart items
   function updateCart() {
-    const totalItems = cart.length;
+    // Save the latest cart in browser storage
+    localStorage.setItem(
+      'eds_cart',
+      JSON.stringify(cart),
+    );
 
-    const totalPrice = cart.reduce(
-      (sum, product) => sum + product.price,
+    // Calculate total quantity
+    const totalItems = cart.reduce(
+      (sum, product) => sum + product.quantity,
       0,
     );
 
-    cartSummary.textContent = `Cart: ${totalItems} items | Total: ₹${totalPrice}`;
+    // Calculate total price
+    const totalPrice = cart.reduce(
+      (sum, product) => (
+        sum + (product.price * product.quantity)
+      ),
+      0,
+    );
+
+    // Update cart summary
+    cartSummary.textContent = (
+      `Cart: ${totalItems} ${totalItems === 1 ? 'item' : 'items'}`
+      + ` | Total: ₹${totalPrice.toLocaleString('en-IN')}`
+    );
+
+    // Clear previous cart display
+    cartItems.replaceChildren();
+
+    // Check whether cart is empty
+    if (cart.length === 0) {
+      const message = document.createElement('p');
+
+      message.textContent = 'Your cart is empty.';
+
+      cartItems.append(message);
+    } else {
+      // Display each cart product
+      cart.forEach((product) => {
+        const cartItem = document.createElement('div');
+        cartItem.className = 'cart-item';
+
+        // Product name
+        const name = document.createElement('span');
+        name.textContent = product.name;
+
+        // Product subtotal
+        const price = document.createElement('span');
+
+        price.textContent = (
+          `₹${(product.price * product.quantity).toLocaleString('en-IN')}`
+        );
+
+        // Quantity controls container
+        const quantityControls = document.createElement('div');
+        quantityControls.className = 'quantity-controls';
+
+        // Decrease quantity button
+        const decreaseButton = document.createElement('button');
+
+        decreaseButton.textContent = '−';
+        decreaseButton.className = 'quantity-button';
+        decreaseButton.type = 'button';
+        decreaseButton.setAttribute('aria-label', `Decrease ${product.name} quantity`);
+
+        decreaseButton.addEventListener('click', () => {
+          if (product.quantity > 1) {
+            product.quantity -= 1;
+          } else {
+            cart.splice(cart.indexOf(product), 1);
+          }
+
+          updateCart();
+        });
+
+        // Display current quantity
+        const quantity = document.createElement('span');
+
+        quantity.className = 'quantity-value';
+        quantity.textContent = product.quantity;
+
+        // Increase quantity button
+        const increaseButton = document.createElement('button');
+
+        increaseButton.textContent = '+';
+        increaseButton.className = 'quantity-button';
+        increaseButton.type = 'button';
+        increaseButton.setAttribute('aria-label', `Increase ${product.name} quantity`);
+
+        increaseButton.addEventListener('click', () => {
+          product.quantity += 1;
+
+          updateCart();
+        });
+
+        // Add quantity controls
+        quantityControls.append(
+          decreaseButton,
+          quantity,
+          increaseButton,
+        );
+
+        // Remove product button
+        const removeButton = document.createElement('button');
+
+        removeButton.textContent = 'Remove';
+        removeButton.className = 'remove-button';
+        removeButton.type = 'button';
+
+        removeButton.addEventListener('click', () => {
+          const index = cart.indexOf(product);
+
+          if (index !== -1) {
+            cart.splice(index, 1);
+          }
+
+          updateCart();
+        });
+
+        // Add elements to cart item
+        cartItem.append(
+          name,
+          price,
+          quantityControls,
+          removeButton,
+        );
+
+        cartItems.append(cartItem);
+      });
+    }
+
+    // Notify other blocks that the cart has changed
+    window.dispatchEvent(
+      new CustomEvent('cart:updated', {
+        detail: { cart },
+      }),
+    );
   }
 
-  // Step 10: Add product to cart
+  // STEP 11: Add product to cart
   function addToCart(product) {
-    cart.push(product);
+    // Check whether product already exists
+    const existingProduct = cart.find(
+      (item) => item.id === product.id,
+    );
+
+    if (existingProduct) {
+      // Increase existing product quantity
+      existingProduct.quantity += 1;
+    } else {
+      // Add new product with quantity 1
+      cart.push({
+        ...product,
+        quantity: 1,
+      });
+    }
 
     updateCart();
   }
 
-  // Step 11: Display product cards
+  // STEP 12: Display product cards
   function displayProducts(items) {
     productGrid.replaceChildren();
 
+    // Check whether products are available
     if (items.length === 0) {
       const message = document.createElement('p');
+
       message.className = 'no-products';
       message.textContent = 'No products found.';
+
       productGrid.append(message);
+
       return;
     }
 
+    // Create individual product cards
     items.forEach((product) => {
       const card = document.createElement('div');
       card.className = 'product-card';
 
+      // Product image
       if (product.image) {
         const image = document.createElement('img');
+
         image.src = product.image;
         image.alt = product.name;
         image.loading = 'lazy';
+
         card.append(image);
       }
 
+      // Product name
       const title = document.createElement('h3');
       title.textContent = product.name;
 
+      // Product price
       const price = document.createElement('p');
-      price.className = 'product-price';
-      price.textContent = `₹${product.price.toLocaleString('en-IN')}`;
 
+      price.className = 'product-price';
+      price.textContent = (
+        `₹${product.price.toLocaleString('en-IN')}`
+      );
+
+      // Add to Cart button
       const button = document.createElement('button');
+
       button.type = 'button';
       button.className = 'add-to-cart';
       button.textContent = 'Add to Cart';
@@ -111,26 +317,29 @@ export default function decorate(block) {
         addToCart(product);
       });
 
+      // Add card elements
       card.append(title, price, button);
 
       productGrid.append(card);
     });
   }
 
-  // Step 12: Search functionality
+  // STEP 13: Search functionality
   search.addEventListener('input', () => {
     const searchValue = search.value.trim().toLowerCase();
 
-    // eslint-disable-next-line max-len
-    const filteredProducts = products.filter((product) => product.name.toLowerCase().includes(searchValue));
+    const filteredProducts = products.filter((product) => (
+      product.name.toLowerCase().includes(searchValue)
+    ));
 
     displayProducts(filteredProducts);
   });
 
-  // Step 13: Replace original block content
+  // STEP 14: Replace original block content
   block.replaceChildren(container);
 
-  // Step 14: Display initial products and cart
+  // STEP 15: Display initial products and restore cart
   displayProducts(products);
+
   updateCart();
 }

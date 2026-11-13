@@ -305,7 +305,7 @@ export default async function decorate(block) {
   }
 
   // Setup Mini-Cart Badge + LocalStorage + Cart Drawer Overlay
-  setupMiniCart(nav);
+  // setupMiniCart(nav);
 
   const hamburger = document.createElement('div');
   hamburger.classList.add('nav-hamburger');
