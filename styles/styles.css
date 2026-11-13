@@ -399,3 +399,14 @@ main .section.light-bg.highlight-left {
   border-left: 6px solid #ec4899;
   box-shadow: 0 8px 25px rgba(236, 72, 153, 0.12);
 }
+/* Allow Product Store section to use full page width */
+main .section:has(.product-store) > div {
+  max-width: none;
+  width: 100%;
+}
+
+/* Expand Product Store block */
+main .product-store.block {
+  width: 100%;
+  max-width: none;
+}
