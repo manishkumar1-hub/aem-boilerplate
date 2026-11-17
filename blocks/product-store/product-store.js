@@ -1,8 +1,4 @@
 /**
- * embedd Block - Converts YouTube links into responsive lazy-loaded video players.
- */
-
-/**
  * Product Store Block
  *
  * Features:
