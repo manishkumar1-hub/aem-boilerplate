@@ -2,222 +2,83 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
-// Media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
 
-// 1. Persistence Helpers (localStorage)
+const FALLBACK_ICONS = {
+  search: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+  </svg>`,
+  cart: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+  </svg>`,
+  chevron: `<svg class="nav-chevron" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <polyline points="5 7.5 10 12.5 15 7.5"/>
+  </svg>`,
+};
+
 function getStoredCart() {
   try {
-    return JSON.parse(localStorage.getItem('eds_cart')) || [];
-  } catch (e) {
+    const saved = JSON.parse(localStorage.getItem('eds_cart'));
+    return Array.isArray(saved) ? saved : [];
+  } catch (error) {
     return [];
   }
 }
 
-function saveStoredCart(items) {
-  localStorage.setItem('eds_cart', JSON.stringify(items));
+function filterProductStore(rawTerm) {
+  const normalized = rawTerm.replace(/-/g, ' ').trim();
+  const query = normalized.toLowerCase() === 'all' ? '' : normalized;
+  const searchInput = document.querySelector('.product-search');
+  if (searchInput) {
+    searchInput.value = query;
+    searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+    searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 }
 
-/**
- * Sets up Mini-Cart Badge, LocalStorage Persistence, and Slide-Out Cart Drawer
- */
-function setupMiniCart(nav) {
-  let tools = nav.querySelector('.nav-tools');
-  if (!tools) {
-    tools = document.createElement('div');
-    tools.className = 'nav-tools';
-    nav.append(tools);
+function toggleAllNavSections(sections, expanded = false) {
+  if (!sections) return;
+  sections.querySelectorAll('.default-content-wrapper > ul > li').forEach((section) => {
+    section.setAttribute('aria-expanded', expanded);
+  });
+}
+
+function closeAllMenus(nav) {
+  if (!nav) return;
+  toggleAllNavSections(nav.querySelector('.nav-sections'), false);
+  const profile = nav.querySelector('.profile-dropdown');
+  if (profile) profile.setAttribute('aria-expanded', 'false');
+  if (!isDesktop.matches && nav.getAttribute('aria-expanded') === 'true') {
+    nav.setAttribute('aria-expanded', 'false');
+    document.body.style.overflowY = '';
+    const btn = nav.querySelector('.nav-hamburger button');
+    if (btn) btn.setAttribute('aria-label', 'Open navigation');
   }
-
-  // Mini-Cart Header Badge
-  const cartBadge = document.createElement('div');
-  cartBadge.className = 'mini-cart-badge';
-  cartBadge.style.cssText = `
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #111;
-    color: #fff;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    cursor: pointer;
-    margin-left: auto;
-    transition: transform 0.2s ease, background-color 0.2s ease;
-    user-select: none;
-  `;
-
-  let cartItems = getStoredCart();
-
-  const updateBadgeCount = () => {
-    const totalCount = cartItems.reduce((acc, item) => acc + (item.qty || 1), 0);
-    cartBadge.innerHTML = `🛒 Cart (<span id="cart-count">${totalCount}</span>)`;
-  };
-
-  updateBadgeCount();
-  tools.append(cartBadge);
-
-  // Create Slide-Out Cart Drawer Container
-  const cartDrawer = document.createElement('div');
-  cartDrawer.className = 'cart-drawer';
-  cartDrawer.style.cssText = `
-    position: fixed;
-    top: 0;
-    right: -400px;
-    width: 350px;
-    height: 100vh;
-    background: #fff;
-    box-shadow: -4px 0 20px rgba(0,0,0,0.15);
-    z-index: 10000;
-    transition: right 0.3s ease;
-    padding: 20px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    color: #111;
-    font-family: inherit;
-  `;
-
-  const renderDrawerContent = () => {
-    const subtotal = cartItems.reduce((acc, item) => acc + (item.price * (item.qty || 1)), 0).toFixed(2);
-
-    cartDrawer.innerHTML = `
-      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:12px;">
-        <h3 style="margin:0; font-size:1.2rem;">Your Cart 🛒</h3>
-        <button id="close-drawer-btn" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">✕</button>
-      </div>
-
-      <div style="flex:1; overflow-y:auto; padding:15px 0;">
-        ${cartItems.length === 0 ? '<p style="color:#666; text-align:center; margin-top:40px;">Your cart is empty.</p>' : ''}
-        ${cartItems.map((item) => `
-          <div style="display:flex; gap:12px; margin-bottom:15px; border-bottom:1px solid #f5f5f5; padding-bottom:10px; align-items:center;">
-            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=100&auto=format&fit=crop" style="width:50px; height:50px; border-radius:6px; object-fit:cover;" />
-            <div style="flex:1;">
-              <div style="font-weight:700; font-size:0.9rem;">Nike Air Max</div>
-              <div style="font-size:0.8rem; color:#666;">SKU: ${item.sku} | Size: ${item.size || '9'}</div>
-              <div style="font-weight:700; color:#0066cc; font-size:0.9rem;">Qty: ${item.qty || 1} × $${item.price}</div>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-
-      <div style="border-top:1px solid #eee; padding-top:15px;">
-        <div style="display:flex; justify-content:space-between; font-weight:700; font-size:1.1rem; margin-bottom:15px;">
-          <span>Subtotal:</span>
-          <span style="color:#0066cc;">$${subtotal}</span>
-        </div>
-        <button id="checkout-btn" ${cartItems.length === 0 ? 'disabled' : ''} style="
-          width:100%;
-          padding:12px;
-          background:${cartItems.length === 0 ? '#ccc' : '#111'};
-          color:#fff;
-          border:none;
-          border-radius:8px;
-          font-weight:700;
-          font-size:1rem;
-          cursor:${cartItems.length === 0 ? 'not-allowed' : 'pointer'};
-          transition: background-color 0.2s;
-        ">Proceed to Checkout 💳</button>
-      </div>
-    `;
-
-    // Close button click
-    cartDrawer.querySelector('#close-drawer-btn')?.addEventListener('click', () => {
-      cartDrawer.style.right = '-400px';
-    });
-
-    // Checkout button click
-    cartDrawer.querySelector('#checkout-btn')?.addEventListener('click', () => {
-      const btn = cartDrawer.querySelector('#checkout-btn');
-      btn.textContent = 'Processing Checkout... ⏳';
-      btn.style.backgroundColor = '#2e7d32';
-
-      setTimeout(() => {
-        alert('🎉 Order Placed Successfully! Order #EDS-98241 Confirmed.');
-        cartItems = [];
-        saveStoredCart(cartItems);
-        updateBadgeCount();
-        renderDrawerContent();
-        cartDrawer.style.right = '-400px';
-      }, 1500);
-    });
-  };
-
-  document.body.appendChild(cartDrawer);
-
-  // Toggle drawer when clicking mini-cart badge
-  cartBadge.addEventListener('click', () => {
-    renderDrawerContent();
-    cartDrawer.style.right = cartDrawer.style.right === '0px' ? '-400px' : '0px';
-  });
-
-  // Listen for 'cart:add' event from Product Details Block
-  window.addEventListener('cart:add', (e) => {
-    const detail = e.detail || {};
-    const newItem = {
-      sku: detail.sku || 'VA01-BLACK',
-      size: detail.size || '9',
-      price: detail.price || 149.99,
-      qty: 1,
-    };
-
-    const existingIndex = cartItems.findIndex((i) => i.sku === newItem.sku && i.size === newItem.size);
-    if (existingIndex > -1) {
-      cartItems[existingIndex].qty = (cartItems[existingIndex].qty || 1) + 1;
-    } else {
-      cartItems.push(newItem);
-    }
-
-    saveStoredCart(cartItems);
-    updateBadgeCount();
-
-    // Pulse badge highlight
-    cartBadge.style.transform = 'scale(1.15)';
-    cartBadge.style.backgroundColor = '#0066cc';
-    setTimeout(() => {
-      cartBadge.style.transform = 'scale(1)';
-      cartBadge.style.backgroundColor = '#111';
-    }, 300);
-  });
 }
 
 function closeOnEscape(e) {
   if (e.code === 'Escape') {
     const nav = document.getElementById('nav');
-    const navSections = nav.querySelector('.nav-sections');
-    if (!navSections) return;
-    const navSectionExpanded = navSections.querySelector('[aria-expanded="true"]');
-    if (navSectionExpanded && isDesktop.matches) {
-      toggleAllNavSections(navSections);
-      navSectionExpanded.focus();
-    } else if (!isDesktop.matches) {
-      toggleMenu(nav, navSections);
-      nav.querySelector('button').focus();
-    }
+    closeAllMenus(nav);
+    const drawer = document.querySelector('.cart-drawer[aria-hidden="false"]');
+    if (drawer) drawer.setAttribute('aria-hidden', 'true');
   }
 }
 
 function closeOnFocusLost(e) {
   const nav = e.currentTarget;
   if (!nav.contains(e.relatedTarget)) {
-    const navSections = nav.querySelector('.nav-sections');
-    if (!navSections) return;
-    const navSectionExpanded = navSections.querySelector('[aria-expanded="true"]');
-    if (navSectionExpanded && isDesktop.matches) {
-      toggleAllNavSections(navSections, false);
-    } else if (!isDesktop.matches) {
-      toggleMenu(nav, navSections, false);
-    }
+    closeAllMenus(nav);
   }
 }
 
 function openOnKeydown(e) {
   const focused = document.activeElement;
-  const isNavDrop = focused.className === 'nav-drop';
-  if (isNavDrop && (e.code === 'Enter' || e.code === 'Space')) {
+  if (focused.classList.contains('nav-drop') && (e.code === 'Enter' || e.code === 'Space')) {
+    e.preventDefault();
     const dropExpanded = focused.getAttribute('aria-expanded') === 'true';
-    toggleAllNavSections(focused.closest('.nav-sections'));
+    toggleAllNavSections(focused.closest('.nav-sections'), false);
     focused.setAttribute('aria-expanded', dropExpanded ? 'false' : 'true');
   }
 }
@@ -226,19 +87,15 @@ function focusNavSection() {
   document.activeElement.addEventListener('keydown', openOnKeydown);
 }
 
-function toggleAllNavSections(sections, expanded = false) {
-  if (!sections) return;
-  sections.querySelectorAll('.nav-sections .default-content-wrapper > ul > li').forEach((section) => {
-    section.setAttribute('aria-expanded', expanded);
-  });
-}
-
 function toggleMenu(nav, navSections, forceExpanded = null) {
-  const expanded = forceExpanded !== null ? !forceExpanded : nav.getAttribute('aria-expanded') === 'true';
+  const expanded = forceExpanded !== null
+    ? !forceExpanded
+    : nav.getAttribute('aria-expanded') === 'true';
   const button = nav.querySelector('.nav-hamburger button');
+
   document.body.style.overflowY = (expanded || isDesktop.matches) ? '' : 'hidden';
   nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-  toggleAllNavSections(navSections, expanded || isDesktop.matches ? 'false' : 'true');
+  toggleAllNavSections(navSections, false);
   button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
 
   if (navSections) {
@@ -267,6 +124,266 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 }
 
+function decorateBrand(navBrand) {
+  const existingLink = navBrand.querySelector('a');
+  const edsIcon = navBrand.querySelector('.icon');
+
+  const link = document.createElement('a');
+  link.href = existingLink ? existingLink.getAttribute('href') : '/';
+  link.className = 'brand-link';
+
+  if (edsIcon) link.append(edsIcon);
+
+  const brandText = document.createElement('span');
+  brandText.className = 'brand-text';
+  brandText.innerHTML = 'Shop<span>Sphere</span>';
+  link.append(brandText);
+
+  navBrand.replaceChildren(link);
+}
+
+function decorateSections(navSections, nav) {
+  const topItems = navSections.querySelectorAll(':scope .default-content-wrapper > ul > li');
+
+  topItems.forEach((navSection) => {
+    const subList = navSection.querySelector(':scope > ul');
+    if (!subList) return;
+
+    navSection.classList.add('nav-drop');
+    navSection.setAttribute('aria-expanded', 'false');
+
+    const labelText = [...navSection.childNodes]
+      .filter((node) => node !== subList)
+      .map((node) => node.textContent.trim())
+      .join(' ')
+      .trim();
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'nav-drop-trigger';
+    trigger.innerHTML = `<span>${labelText}</span>${FALLBACK_ICONS.chevron}`;
+
+    [...navSection.childNodes].forEach((node) => {
+      if (node !== subList) node.remove();
+    });
+    navSection.prepend(trigger);
+
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const expanded = navSection.getAttribute('aria-expanded') === 'true';
+      toggleAllNavSections(navSections, false);
+      navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+    });
+
+    // Make every dropdown item clickable (whether <a> or plain <li> text)
+    subList.querySelectorAll('li').forEach((subItem) => {
+      const subLink = subItem.querySelector('a');
+      const itemLabel = subItem.textContent.trim();
+
+      if (!subLink) {
+        const anchor = document.createElement('a');
+        anchor.href = `#search=${itemLabel.toLowerCase().replace(/\s+/g, '-')}`;
+        anchor.textContent = itemLabel;
+        subItem.replaceChildren(anchor);
+      }
+
+      const activeLink = subItem.querySelector('a');
+      activeLink.addEventListener('click', (e) => {
+        const href = activeLink.getAttribute('href') || '';
+        if (href.startsWith('#search=')) {
+          e.preventDefault();
+          const rawTerm = decodeURIComponent(href.replace('#search=', ''));
+          closeAllMenus(nav);
+          filterProductStore(rawTerm);
+        }
+      });
+    });
+  });
+}
+
+function attachIconWithFallback(button, edsIcon, fallbackSvg) {
+  if (edsIcon) {
+    const img = edsIcon.querySelector('img');
+    if (img) {
+      img.addEventListener('error', () => {
+        edsIcon.remove();
+        button.insertAdjacentHTML('afterbegin', fallbackSvg);
+      });
+    }
+    button.append(edsIcon);
+  } else {
+    button.insertAdjacentHTML('afterbegin', fallbackSvg);
+  }
+}
+
+function buildCartDrawer() {
+  const drawer = document.createElement('aside');
+  drawer.className = 'cart-drawer';
+  drawer.setAttribute('aria-hidden', 'true');
+  drawer.setAttribute('aria-label', 'Shopping Cart Drawer');
+
+  const renderDrawer = (items) => {
+    const subtotal = items.reduce(
+      (sum, item) => sum + ((Number(item.price) || 0) * (Number(item.quantity) || 0)),
+      0,
+    );
+
+    drawer.innerHTML = `
+      <div class="cart-drawer-header">
+        <h3>Your Cart</h3>
+        <button type="button" class="cart-drawer-close" aria-label="Close cart">×</button>
+      </div>
+      <div class="cart-drawer-body">
+        ${items.length === 0
+    ? '<p class="cart-drawer-empty">Your cart is empty.</p>'
+    : items.map((item) => `
+            <div class="cart-drawer-item">
+              ${item.image ? `<img src="${item.image}" alt="${item.name}" />` : ''}
+              <div class="cart-drawer-info">
+                <div class="cart-drawer-name">${item.name}</div>
+                <div class="cart-drawer-meta">Qty: ${item.quantity} × ₹${Number(item.price).toLocaleString('en-IN')}</div>
+              </div>
+              <div class="cart-drawer-subtotal">₹${(Number(item.price) * Number(item.quantity)).toLocaleString('en-IN')}</div>
+            </div>
+          `).join('')}
+      </div>
+      <div class="cart-drawer-footer">
+        <div class="cart-drawer-total">
+          <span>Subtotal</span>
+          <span>₹${subtotal.toLocaleString('en-IN')}</span>
+        </div>
+        <button type="button" class="cart-drawer-cta">View & Manage Cart</button>
+      </div>
+    `;
+
+    drawer.querySelector('.cart-drawer-close')?.addEventListener('click', () => {
+      drawer.setAttribute('aria-hidden', 'true');
+    });
+
+    drawer.querySelector('.cart-drawer-cta')?.addEventListener('click', () => {
+      drawer.setAttribute('aria-hidden', 'true');
+      const cartSummary = document.querySelector('.cart-summary');
+      if (cartSummary) {
+        cartSummary.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  };
+
+  renderDrawer(getStoredCart());
+  document.body.append(drawer);
+
+  return {
+    open() {
+      renderDrawer(getStoredCart());
+      drawer.setAttribute('aria-hidden', 'false');
+    },
+    sync(items) {
+      renderDrawer(items);
+    },
+  };
+}
+
+function decorateTools(navTools, nav) {
+  const searchIcon = navTools.querySelector('.icon-search');
+  const cartIcon = navTools.querySelector('.icon-cart');
+
+  const profileItem = navTools.querySelector('li:last-child');
+  const profileSubList = profileItem ? profileItem.querySelector('ul') : null;
+  const userName = profileItem
+    ? [...profileItem.childNodes]
+      .filter((n) => n !== profileSubList && !n.classList?.contains('icon'))
+      .map((n) => n.textContent.trim())
+      .join('')
+      .trim() || 'Manish'
+    : 'Manish';
+
+  const toolsGroup = document.createElement('div');
+  toolsGroup.className = 'header-tools-group';
+
+  // 1. Search Button
+  const searchBtn = document.createElement('button');
+  searchBtn.type = 'button';
+  searchBtn.className = 'tool-icon-btn';
+  searchBtn.setAttribute('aria-label', 'Search products');
+  attachIconWithFallback(searchBtn, searchIcon, FALLBACK_ICONS.search);
+  searchBtn.addEventListener('click', () => {
+    closeAllMenus(nav);
+    const searchInput = document.querySelector('.product-search');
+    if (searchInput) {
+      searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      searchInput.focus();
+    }
+  });
+
+  // 2. Cart Button + Live Badge + Slide-Out Drawer
+  const cartDrawer = buildCartDrawer();
+  const cartBtn = document.createElement('button');
+  cartBtn.type = 'button';
+  cartBtn.className = 'tool-icon-btn cart-tool-btn';
+  cartBtn.setAttribute('aria-label', 'Open shopping cart');
+  attachIconWithFallback(cartBtn, cartIcon, FALLBACK_ICONS.cart);
+
+  const cartBadge = document.createElement('span');
+  cartBadge.className = 'cart-badge';
+
+  const updateCartUI = (items) => {
+    const count = items.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
+    cartBadge.textContent = count;
+    cartBadge.hidden = count === 0;
+    cartDrawer.sync(items);
+  };
+
+  updateCartUI(getStoredCart());
+  cartBtn.append(cartBadge);
+
+  cartBtn.addEventListener('click', () => {
+    closeAllMenus(nav);
+    cartDrawer.open();
+  });
+
+  window.addEventListener('cart:updated', (e) => {
+    const updatedItems = Array.isArray(e.detail?.cart) ? e.detail.cart : getStoredCart();
+    updateCartUI(updatedItems);
+    cartBtn.classList.add('is-bumping');
+    setTimeout(() => cartBtn.classList.remove('is-bumping'), 300);
+  });
+
+  // 3. Vertical Divider
+  const divider = document.createElement('span');
+  divider.className = 'tools-divider';
+  divider.setAttribute('aria-hidden', 'true');
+
+  // 4. User Profile Dropdown
+  const profileDropdown = document.createElement('div');
+  profileDropdown.className = 'profile-dropdown';
+  profileDropdown.setAttribute('aria-expanded', 'false');
+
+  const profileTrigger = document.createElement('button');
+  profileTrigger.type = 'button';
+  profileTrigger.className = 'profile-trigger';
+  profileTrigger.innerHTML = `
+    <span class="profile-avatar">${userName.charAt(0).toUpperCase()}</span>
+    <span class="profile-name">${userName}</span>
+    ${FALLBACK_ICONS.chevron}
+  `;
+
+  profileTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = profileDropdown.getAttribute('aria-expanded') === 'true';
+    toggleAllNavSections(nav.querySelector('.nav-sections'), false);
+    profileDropdown.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+  });
+
+  profileDropdown.append(profileTrigger);
+  if (profileSubList) {
+    profileSubList.className = 'profile-menu-list';
+    profileDropdown.append(profileSubList);
+  }
+
+  toolsGroup.append(searchBtn, cartBtn, divider, profileDropdown);
+  navTools.replaceChildren(toolsGroup);
+}
+
 export default async function decorate(block) {
   const navMeta = getMetadata('nav');
   const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
@@ -284,37 +401,25 @@ export default async function decorate(block) {
   });
 
   const navBrand = nav.querySelector('.nav-brand');
-  const brandLink = navBrand?.querySelector('.button');
-  if (brandLink) {
-    brandLink.className = '';
-    brandLink.closest('.button-container').className = '';
-  }
-
   const navSections = nav.querySelector('.nav-sections');
-  if (navSections) {
-    navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
-      if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
-      navSection.addEventListener('click', () => {
-        if (isDesktop.matches) {
-          const expanded = navSection.getAttribute('aria-expanded') === 'true';
-          toggleAllNavSections(navSections);
-          navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-        }
-      });
-    });
-  }
+  const navTools = nav.querySelector('.nav-tools');
 
-  // Setup Mini-Cart Badge + LocalStorage + Cart Drawer Overlay
-  // setupMiniCart(nav);
+  if (navBrand) decorateBrand(navBrand);
+  if (navSections) decorateSections(navSections, nav);
+  if (navTools) decorateTools(navTools, nav);
 
   const hamburger = document.createElement('div');
   hamburger.classList.add('nav-hamburger');
   hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
-      <span class="nav-hamburger-icon"></span>
-    </button>`;
+    <span class="nav-hamburger-icon"></span>
+  </button>`;
   hamburger.addEventListener('click', () => toggleMenu(nav, navSections));
   nav.prepend(hamburger);
   nav.setAttribute('aria-expanded', 'false');
+
+  document.addEventListener('click', (e) => {
+    if (!nav.contains(e.target)) closeAllMenus(nav);
+  });
 
   toggleMenu(nav, navSections, isDesktop.matches);
   isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
