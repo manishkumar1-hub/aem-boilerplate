@@ -11,91 +11,92 @@
  */
 
 :root {
-  /* colors */
-  --background-color: white;
-  --light-color: #f8f8f8;
-  --dark-color: #505050;
-  --text-color: #131313;
-  --link-color: #3b63fb;
-  --link-hover-color: #1d3ecf;
+    /* colors */
+    --background-color: white;
+    --light-color: #f8f8f8;
+    --dark-color: #505050;
+    --text-color: #131313;
+    --link-color: #3b63fb;
+    --link-hover-color: #1d3ecf;
 
-  /* fonts */
-  --body-font-family: roboto, roboto-fallback, sans-serif;
-  --heading-font-family: roboto-condensed, roboto-condensed-fallback, sans-serif;
+    /* fonts */
+    --body-font-family: roboto, roboto-fallback, sans-serif;
+    --heading-font-family:
+        roboto-condensed, roboto-condensed-fallback, sans-serif;
 
-  /* body sizes */
-  --body-font-size-m: 22px;
-  --body-font-size-s: 19px;
-  --body-font-size-xs: 17px;
+    /* body sizes */
+    --body-font-size-m: 22px;
+    --body-font-size-s: 19px;
+    --body-font-size-xs: 17px;
 
-  /* heading sizes */
-  --heading-font-size-xxl: 55px;
-  --heading-font-size-xl: 44px;
-  --heading-font-size-l: 34px;
-  --heading-font-size-m: 27px;
-  --heading-font-size-s: 24px;
-  --heading-font-size-xs: 22px;
+    /* heading sizes */
+    --heading-font-size-xxl: 55px;
+    --heading-font-size-xl: 44px;
+    --heading-font-size-l: 34px;
+    --heading-font-size-m: 27px;
+    --heading-font-size-s: 24px;
+    --heading-font-size-xs: 22px;
 
-  /* nav height */
-  --nav-height: 64px;
+    /* nav height */
+    --nav-height: 64px;
 }
 
 /* fallback fonts */
 @font-face {
-  font-family: roboto-condensed-fallback;
-  size-adjust: 88.82%;
-  src: local('Arial');
+    font-family: roboto-condensed-fallback;
+    size-adjust: 88.82%;
+    src: local("Arial");
 }
 
 @font-face {
-  font-family: roboto-fallback;
-  size-adjust: 99.529%;
-  src: local('Arial');
+    font-family: roboto-fallback;
+    size-adjust: 99.529%;
+    src: local("Arial");
 }
 
 @media (width >= 900px) {
-  :root {
-    /* body sizes */
-    --body-font-size-m: 18px;
-    --body-font-size-s: 16px;
-    --body-font-size-xs: 14px;
+    :root {
+        /* body sizes */
+        --body-font-size-m: 18px;
+        --body-font-size-s: 16px;
+        --body-font-size-xs: 14px;
 
-    /* heading sizes */
-    --heading-font-size-xxl: 45px;
-    --heading-font-size-xl: 36px;
-    --heading-font-size-l: 28px;
-    --heading-font-size-m: 22px;
-    --heading-font-size-s: 20px;
-    --heading-font-size-xs: 18px;
-  }
+        /* heading sizes */
+        --heading-font-size-xxl: 45px;
+        --heading-font-size-xl: 36px;
+        --heading-font-size-l: 28px;
+        --heading-font-size-m: 22px;
+        --heading-font-size-s: 20px;
+        --heading-font-size-xs: 18px;
+    }
 }
 
 body {
-  display: none;
-  margin: 0;
-  background-color: var(--background-color);
-  color: var(--text-color);
-  font-family: var(--body-font-family);
-  font-size: var(--body-font-size-m);
-  line-height: 1.6;
+    display: none;
+    margin: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: var(--body-font-family);
+    font-size: var(--body-font-size-m);
+    line-height: 1.6;
 }
 
 body.appear {
-  display: block;
+    display: block;
 }
 
 header {
-  height: var(--nav-height);
+    height: var(--nav-height);
 }
 
 header .header,
 footer .footer {
-  visibility: hidden;
+    visibility: hidden;
 }
 
 header .header[data-block-status="loaded"],
 footer .footer[data-block-status="loaded"] {
-  visibility: visible;
+    visibility: visible;
 }
 
 h1,
@@ -104,20 +105,32 @@ h3,
 h4,
 h5,
 h6 {
-  margin-top: 0.8em;
-  margin-bottom: 0.25em;
-  font-family: var(--heading-font-family);
-  font-weight: 600;
-  line-height: 1.25;
-  scroll-margin: 40px;
+    margin-top: 0.8em;
+    margin-bottom: 0.25em;
+    font-family: var(--heading-font-family);
+    font-weight: 600;
+    line-height: 1.25;
+    scroll-margin: 40px;
 }
 
-h1 { font-size: var(--heading-font-size-xxl); }
-h2 { font-size: var(--heading-font-size-xl); }
-h3 { font-size: var(--heading-font-size-l); }
-h4 { font-size: var(--heading-font-size-m); }
-h5 { font-size: var(--heading-font-size-s); }
-h6 { font-size: var(--heading-font-size-xs); }
+h1 {
+    font-size: var(--heading-font-size-xxl);
+}
+h2 {
+    font-size: var(--heading-font-size-xl);
+}
+h3 {
+    font-size: var(--heading-font-size-l);
+}
+h4 {
+    font-size: var(--heading-font-size-m);
+}
+h5 {
+    font-size: var(--heading-font-size-s);
+}
+h6 {
+    font-size: var(--heading-font-size-xs);
+}
 
 p,
 dl,
@@ -125,92 +138,92 @@ ol,
 ul,
 pre,
 blockquote {
-  margin-top: 0.8em;
-  margin-bottom: 0.25em;
+    margin-top: 0.8em;
+    margin-bottom: 0.25em;
 }
 
 code,
 pre {
-  font-size: var(--body-font-size-s);
+    font-size: var(--body-font-size-s);
 }
 
 pre {
-  padding: 16px;
-  border-radius: 8px;
-  background-color: var(--light-color);
-  overflow-x: auto;
-  white-space: pre;
+    padding: 16px;
+    border-radius: 8px;
+    background-color: var(--light-color);
+    overflow-x: auto;
+    white-space: pre;
 }
 
 main > div {
-  margin: 40px 16px;
+    margin: 40px 16px;
 }
 
 input,
 textarea,
 select,
 button {
-  font: inherit;
+    font: inherit;
 }
 
 /* links */
 a:any-link {
-  color: var(--link-color);
-  text-decoration: none;
-  overflow-wrap: break-word;
+    color: var(--link-color);
+    text-decoration: none;
+    overflow-wrap: break-word;
 }
 
 a:hover {
-  color: var(--link-hover-color);
-  text-decoration: underline;
+    color: var(--link-hover-color);
+    text-decoration: underline;
 }
 
 /* buttons */
 p.button-wrapper {
-  margin: 12px 0;
+    margin: 12px 0;
 }
 
 a.button:any-link,
 button.button {
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  max-width: 100%;
-  margin: 0;
-  border: 2px solid transparent;
-  border-radius: 2.4em;
-  padding: 0.5em 1.2em;
-  font: inherit;
-  font-weight: 500;
-  line-height: 1.25;
-  text-decoration: none;
-  cursor: pointer;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    margin: 0;
+    border: 2px solid transparent;
+    border-radius: 2.4em;
+    padding: 0.5em 1.2em;
+    font: inherit;
+    font-weight: 500;
+    line-height: 1.25;
+    text-decoration: none;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 a.button[aria-disabled="true"],
 button.button:disabled {
-  cursor: not-allowed;
-  pointer-events: none;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 a.button.primary,
 button.button.primary {
-  border-color: var(--text-color);
-  background-color: var(--text-color);
-  color: var(--background-color);
+    border-color: var(--text-color);
+    background-color: var(--text-color);
+    color: var(--background-color);
 }
 
 a.button.primary:hover,
 a.button.primary:focus-visible,
 button.button.primary:hover,
 button.button.primary:focus-visible {
-  border-color: var(--dark-color);
-  background-color: var(--dark-color);
-  color: var(--light-color);
+    border-color: var(--dark-color);
+    background-color: var(--dark-color);
+    color: var(--light-color);
 }
 
 a.button.primary[aria-disabled="true"],
@@ -219,25 +232,25 @@ a.button.primary[aria-disabled="true"]:focus-visible,
 button.button.primary:disabled,
 button.button.primary:disabled:hover,
 button.button.primary:disabled:focus-visible {
-  background-color: var(--light-color);
-  border-color: var(--light-color);
-  color: var(--dark-color);
+    background-color: var(--light-color);
+    border-color: var(--light-color);
+    color: var(--dark-color);
 }
 
 a.button.secondary,
 button.button.secondary {
-  border-color: var(--text-color);
-  background-color: transparent;
-  color: var(--text-color);
+    border-color: var(--text-color);
+    background-color: transparent;
+    color: var(--text-color);
 }
 
 a.button.secondary:hover,
 a.button.secondary:focus-visible,
 button.button.secondary:hover,
 button.button.secondary:focus-visible {
-  border-color: var(--dark-color);
-  background-color: var(--light-color);
-  color: var(--dark-color);
+    border-color: var(--dark-color);
+    background-color: var(--light-color);
+    color: var(--dark-color);
 }
 
 a.button.secondary[aria-disabled="true"],
@@ -246,25 +259,25 @@ a.button.secondary[aria-disabled="true"]:focus-visible,
 button.button.secondary:disabled,
 button.button.secondary:disabled:hover,
 button.button.secondary:disabled:focus-visible {
-  background-color: var(--light-color);
-  border-color: var(--light-color);
-  color: var(--dark-color);
+    background-color: var(--light-color);
+    border-color: var(--light-color);
+    color: var(--dark-color);
 }
 
 /* high-impact call-to-action */
 a.button.accent,
 button.button.accent {
-  border-color: var(--link-color);
-  background-color: var(--link-color);
-  color: var(--background-color);
+    border-color: var(--link-color);
+    background-color: var(--link-color);
+    color: var(--background-color);
 }
 
 a.button.accent:hover,
 a.button.accent:focus-visible,
 button.button.accent:hover,
 button.button.accent:focus-visible {
-  border-color: var(--link-hover-color);
-  background-color: var(--link-hover-color);
+    border-color: var(--link-hover-color);
+    background-color: var(--link-hover-color);
 }
 
 a.button.accent[aria-disabled="true"],
@@ -273,60 +286,59 @@ a.button.accent[aria-disabled="true"]:focus-visible,
 button.button.accent:disabled,
 button.button.accent:disabled:hover,
 button.button.accent:disabled:focus-visible {
-  background-color: var(--light-color);
-  border-color: var(--light-color);
-  color: var(--dark-color);
+    background-color: var(--light-color);
+    border-color: var(--light-color);
+    color: var(--dark-color);
 }
 
 main img {
-  max-width: 100%;
-  width: auto;
-  height: auto;
+    max-width: 100%;
+    width: auto;
+    height: auto;
 }
 
 .icon {
-  display: inline-block;
-  height: 24px;
-  width: 24px;
+    display: inline-block;
+    height: 24px;
+    width: 24px;
 }
 
 .icon img {
-  height: 100%;
-  width: 100%;
+    height: 100%;
+    width: 100%;
 }
 
 /* sections */
 main > .section {
-  margin: 40px 0;
+    margin: 40px 0;
 }
 
 main > .section > div {
-  max-width: 1200px;
-  margin: auto;
-  padding: 0 24px;
+    max-width: 1200px;
+    margin: auto;
+    padding: 0 24px;
 }
 
 main > .section:first-of-type {
-  margin-top: 0;
+    margin-top: 0;
 }
 
 @media (width >= 900px) {
-  main > .section > div {
-    padding: 0 32px;
-  }
+    main > .section > div {
+        padding: 0 32px;
+    }
 }
 
 /* section metadata */
 main .section.light,
 main .section.highlight {
-  background-color: var(--light-color);
-  margin: 0;
-  padding: 40px 0;
+    background-color: var(--light-color);
+    margin: 0;
+    padding: 40px 0;
 }
 /* ==========================================================================
    Section Metadata Custom Styles (EDS #15)
    ========================================================================== */
-
 
 /* ==========================================================================
    Section Metadata Custom Styles
@@ -334,79 +346,199 @@ main .section.highlight {
 
 /* Dark variant */
 main .dark {
-  background-color: #0f172a;
-  color: #f8fafc;
-  padding: 3rem 1.5rem;
+    background-color: #0f172a;
+    color: #f8fafc;
+    padding: 3rem 1.5rem;
 }
 
 /* Light pink section */
 main .light-bg {
-  background-color: #fce4ec;
-  color: #0f172a;
-  padding: 3.5rem 1.5rem;
-  max-width: 100%;
-  margin: 0;
-  border-radius: 0;
+    background-color: #fce4ec;
+    color: #0f172a;
+    padding: 3.5rem 1.5rem;
+    max-width: 100%;
+    margin: 0;
+    border-radius: 0;
 }
 
 /* Multiple section classes */
 
 main .light-bg.highlight-left {
-  background-color: #fce4ec;
-  border-left: 8px solid #ec4899 !important;
-  box-shadow: 0 8px 25px rgba(236, 72, 153, 0.20);
-  padding: 3.5rem 1.5rem;
-  box-sizing: border-box;
+    background-color: #fce4ec;
+    border-left: 8px solid #ec4899 !important;
+    box-shadow: 0 8px 25px rgba(236, 72, 153, 0.2);
+    padding: 3.5rem 1.5rem;
+    box-sizing: border-box;
 }
 
 /* Section headings */
 main .light-bg h3 {
-  margin-top: 0;
-  font-size: 1.8rem;
-  color: #0066cc;
+    margin-top: 0;
+    font-size: 1.8rem;
+    color: #0066cc;
 }
 
 /* Section lists */
 main .light-bg ul {
-  line-height: 1.8;
-  font-size: 1.05rem;
+    line-height: 1.8;
+    font-size: 1.05rem;
 }
 /* ==========================================================================
    Auto-Blocked Announcement Banner (EDS #15)
    ========================================================================== */
 
 main .announcement-wrapper {
-  padding: 0;
-  margin-bottom: 1rem;
+    padding: 0;
+    margin-bottom: 1rem;
 }
 
 main .announcement {
-  background: linear-gradient(90deg, #ff4e50 0%, #f9d423 100%);
-  color: #111111;
-  text-align: center;
-  padding: 0.75rem 1rem;
-  font-weight: 700;
-  font-size: 0.95rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(90deg, #ff4e50 0%, #f9d423 100%);
+    color: #111111;
+    text-align: center;
+    padding: 0.75rem 1rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 main .announcement p {
-  margin: 0;
+    margin: 0;
 }
 /* Multiple section classes */
 main .section.light-bg.highlight-left {
-  background-color: #fce4ec;
-  border-left: 6px solid #ec4899;
-  box-shadow: 0 8px 25px rgba(236, 72, 153, 0.12);
+    background-color: #fce4ec;
+    border-left: 6px solid #ec4899;
+    box-shadow: 0 8px 25px rgba(236, 72, 153, 0.12);
 }
 /* Allow Product Store section to use full page width */
 main .section:has(.product-store) > div {
-  max-width: none;
-  width: 100%;
+    max-width: none;
+    width: 100%;
 }
 
 /* Expand Product Store block */
 main .product-store.block {
-  width: 100%;
-  max-width: none;
+    width: 100%;
+    max-width: none;
+}
+/* ========================================
+   ABOUT PAGE SECTIONS (EDS SECTION METADATA)
+======================================== */
+
+main .section.about-hero {
+    background: linear-gradient(135deg, #162844 0%, #1e3a63 100%);
+    color: #ffffff;
+    padding: 64px 24px;
+    margin: 0;
+    border-bottom: 3px solid #f59e0b;
+}
+
+main .section.about-hero > div {
+    max-width: 1140px;
+    margin: 0 auto;
+}
+
+main .section.about-hero h1 {
+    color: #ffffff;
+    font-size: 38px;
+    font-weight: 800;
+    margin: 0 0 14px;
+}
+
+main .section.about-hero p {
+    color: #cbd5e1;
+    font-size: 18px;
+    line-height: 1.6;
+    max-width: 720px;
+    margin: 0;
+}
+
+/* Story & 3 Feature Cards */
+main .section.about-content {
+    padding: 56px 24px 24px;
+}
+
+main .section.about-content > div {
+    max-width: 1140px;
+    margin: 0 auto;
+}
+
+main .section.about-content h2 {
+    color: #162844;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 16px;
+}
+
+main .section.about-content > .default-content-wrapper p {
+    color: #334155;
+    font-size: 16px;
+    line-height: 1.75;
+    max-width: 860px;
+    margin: 0 0 18px;
+}
+
+/* Style the 3 Columns as Cards */
+main .section.about-content .columns {
+    margin: 40px 0 36px;
+}
+
+main .section.about-content .columns > div {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    align-items: stretch;
+}
+
+main .section.about-content .columns > div > div {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-top: 4px solid #f59e0b;
+    border-radius: 12px;
+    padding: 26px 24px;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+main .section.about-content .columns strong {
+    display: block;
+    color: #162844;
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+main .section.about-content .columns p {
+    color: #475569;
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Explore Products Button */
+main .section.about-content .button-container a.button:any-link {
+    background-color: #162844;
+    color: #ffffff;
+    padding: 13px 26px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+main .section.about-content .button-container a.button:hover {
+    background-color: #1e3a63;
+}
+
+@media (max-width: 900px) {
+    main .section.about-hero {
+        padding: 44px 20px;
+    }
+
+    main .section.about-hero h1 {
+        font-size: 30px;
+    }
+
+    main .section.about-content .columns > div {
+        grid-template-columns: 1fr;
+    }
 }
