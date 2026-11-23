@@ -1,45 +1,230 @@
+/* ========================================
+   SHOPSPHERE API CARDS BLOCK (EDS)
+======================================== */
 
-.api-cards > ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
-  gap: 24px;
+.api-cards {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 12px 0;
+    box-sizing: border-box;
 }
 
-.api-cards > ul > li {
-  border: 1px solid #dadada;
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--background-color);
+/* Toolbar: Search & Cart Summary */
+.api-cards .api-cards-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 24px;
 }
 
-.api-cards-image {
-  line-height: 0;
+.api-cards .product-search {
+    width: 100%;
+    max-width: 420px;
+    padding: 12px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #0f172a;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
-.api-cards-image img {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: contain;
+.api-cards .product-search:focus {
+    outline: none;
+    border-color: #162844;
+    box-shadow: 0 0 0 3px rgba(22, 40, 68, 0.14);
 }
 
-.api-cards-content {
-  margin: 16px;
+.api-cards .api-cards-cart-summary {
+    padding: 11px 16px;
+    background-color: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    color: #162844;
+    font-size: 14px;
+    font-weight: 700;
 }
 
-.api-cards-content h3 {
-  font-size: 18px;
-}
-
-.api-cards-price {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-@media (max-width: 600px) {
-  .api-cards > ul {
+/* Product Grid (Mobile-First: 1 Column) */
+.api-cards .api-cards-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
     grid-template-columns: 1fr;
-  }
+    gap: 24px;
+    align-items: stretch;
+}
+
+/* Product Card */
+.api-cards .api-cards-item {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.api-cards .api-cards-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.1);
+}
+
+.api-cards .api-cards-image {
+    background-color: #f8fafc;
+    padding: 14px;
+    line-height: 0;
+}
+
+.api-cards .api-cards-image img {
+    width: 100%;
+    height: 190px;
+    object-fit: contain;
+}
+
+/* Card Content */
+.api-cards .api-cards-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 18px;
+}
+
+.api-cards .api-cards-content h3 {
+    margin: 0 0 8px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #162844;
+    line-height: 1.35;
+}
+
+.api-cards .api-cards-desc {
+    margin: 0 0 14px;
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.5;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.api-cards .api-cards-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.api-cards .api-cards-price {
+    font-size: 19px;
+    font-weight: 800;
+    color: #15803d;
+}
+
+.api-cards .api-cards-rating {
+    font-size: 13px;
+    font-weight: 600;
+    color: #b45309;
+    background-color: #fef3c7;
+    padding: 3px 8px;
+    border-radius: 6px;
+}
+
+/* Add to Cart & Quantity Controls */
+.api-cards .api-cards-add-btn {
+    width: 100%;
+    padding: 11px 16px;
+    background-color: #162844;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.api-cards .api-cards-add-btn:hover {
+    background-color: #1e3a63;
+}
+
+.api-cards .api-cards-qty {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #162844;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.api-cards .api-cards-qty-btn {
+    width: 42px;
+    height: 38px;
+    border: none;
+    background-color: #162844;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.api-cards .api-cards-qty-btn:hover {
+    background-color: #1e3a63;
+}
+
+.api-cards .api-cards-qty-value {
+    font-size: 15px;
+    font-weight: 700;
+    color: #162844;
+}
+
+.api-cards .api-cards-add-btn:focus-visible,
+.api-cards .api-cards-qty-btn:focus-visible {
+    outline: 2px solid #f59e0b;
+    outline-offset: 2px;
+}
+
+/* Loading & Empty States */
+.api-cards .api-cards-status {
+    grid-column: 1 / -1;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    color: #475569;
+    font-size: 15px;
+    padding: 24px;
+}
+
+/* Tablet Breakpoint (2 Columns) */
+@media (min-width: 600px) {
+    .api-cards .api-cards-toolbar {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .api-cards .api-cards-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Desktop Breakpoint (4 Columns) */
+@media (min-width: 900px) {
+    .api-cards .api-cards-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
 }
