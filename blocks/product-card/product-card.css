@@ -1,20 +1,156 @@
-.product-card .product-card-container {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 16px;
-  max-width: 300px;
-  text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+/* ========================================
+   SHOPSPHERE DYNAMIC PRODUCT STORE (EDS)
+======================================== */
+
+.product-store .product-store-wrapper {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 16px 0;
+    box-sizing: border-box;
 }
 
-.product-card img {
-  border-radius: 4px;
-  object-fit: cover;
+/* Search Input */
+.product-store .product-search {
+    width: 100%;
+    max-width: 420px;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #0f172a;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
-.product-card .price {
-  display: block;
-  font-weight: bold;
-  color: #2e7d32;
-  margin-top: 8px;
+.product-store .product-search:focus {
+    outline: none;
+    border-color: #162844;
+    box-shadow: 0 0 0 3px rgba(22, 40, 68, 0.15);
+}
+
+/* Responsive Product Grid (Mobile-First: 1 Column) */
+.product-store .product-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    align-items: stretch;
+}
+
+/* Product Card */
+.product-store .product-card {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.product-store .product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.1);
+}
+
+.product-store .product-card img {
+    width: 100%;
+    height: 190px;
+    object-fit: contain;
+    background-color: #f8fafc;
+    border-radius: 8px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* Card Text & Alignment */
+.product-store .product-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin-top: 14px;
+}
+
+.product-store .product-info h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #162844;
+    margin: 0 0 8px;
+    line-height: 1.35;
+}
+
+.product-store .product-desc {
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.5;
+    margin: 0 0 14px;
+    flex: 1;
+}
+
+.product-store .product-price {
+    display: block;
+    font-size: 18px;
+    font-weight: 800;
+    color: #15803d;
+    margin-bottom: 14px;
+}
+
+/* Add to Cart Button */
+.product-store .add-to-cart-btn {
+    width: 100%;
+    padding: 11px 16px;
+    background-color: #162844;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.product-store .add-to-cart-btn:hover {
+    background-color: #1e3a63;
+}
+
+.product-store .add-to-cart-btn:focus-visible {
+    outline: 2px solid #f59e0b;
+    outline-offset: 2px;
+}
+
+/* Loading Skeleton, Empty & Error States (Prevents CLS) */
+.product-store .skeleton,
+.product-store .no-results,
+.product-store .error-msg {
+    grid-column: 1 / -1;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    color: #475569;
+    font-size: 15px;
+    padding: 24px;
+}
+
+/* Tablet Breakpoint (2 Columns) */
+@media (min-width: 600px) {
+    .product-store .product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Desktop Breakpoint (4 Columns) */
+@media (min-width: 900px) {
+    .product-store .product-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
 }
