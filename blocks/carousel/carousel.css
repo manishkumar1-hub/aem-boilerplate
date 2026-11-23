@@ -125,23 +125,24 @@
 .carousel-dots {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     margin: 18px 0;
 }
 
 .carousel-dot {
-    width: 11px;
-    height: 11px;
-    padding: 0;
+    width: 28px;
+    height: 28px;
+    padding: 8px;
     border: none;
     border-radius: 50%;
-    background: #cccccc;
+    background-color: #cccccc;
+    background-clip: content-box;
     cursor: pointer;
 }
 
 .carousel-dot.active {
-    background: #1473e6;
-    transform: scale(1.2);
+    background-color: #1473e6;
+    transform: scale(1.15);
 }
 
 .carousel-prev:focus-visible,
