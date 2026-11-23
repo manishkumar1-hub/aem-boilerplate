@@ -228,3 +228,139 @@
         grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 }
+/* ========================================
+   DEDICATED CART ITEMS PANEL
+======================================== */
+
+.api-cards .api-cards-cart-panel {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.api-cards .api-cards-cart-empty {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.api-cards .api-cards-cart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.api-cards .api-cards-cart-header h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #162844;
+}
+
+.api-cards .api-cards-clear-btn {
+    padding: 6px 12px;
+    background-color: #f1f5f9;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.api-cards .api-cards-clear-btn:hover {
+    background-color: #e2e8f0;
+}
+
+.api-cards .api-cards-cart-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.api-cards .api-cards-cart-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 10px;
+    background-color: #f8fafc;
+    border-radius: 8px;
+}
+
+.api-cards .api-cards-cart-item-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.api-cards .api-cards-cart-item-info img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+}
+
+.api-cards .api-cards-cart-item-info strong {
+    display: block;
+    font-size: 14px;
+    color: #162844;
+}
+
+.api-cards .api-cards-cart-item-info span {
+    font-size: 13px;
+    color: #475569;
+}
+
+.api-cards .api-cards-cart-row-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.api-cards .api-cards-mini-btn {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #cbd5e1;
+    background-color: #ffffff;
+    color: #162844;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.api-cards .api-cards-mini-qty {
+    min-width: 20px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #162844;
+}
+
+.api-cards .api-cards-remove-btn {
+    padding: 6px 12px;
+    background-color: #dc2626;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.api-cards .api-cards-remove-btn:hover {
+    background-color: #b91c1c;
+}

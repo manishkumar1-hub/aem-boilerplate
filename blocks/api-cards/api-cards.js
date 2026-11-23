@@ -24,11 +24,10 @@ function formatMoney(amount) {
 
 /**
  * API Cards Block - Fetches products dynamically from an authored API URL
- * with live search filtering and cart state synchronization.
+ * with live search filtering, cart items panel, and header cart sync.
  * @param {Element} block The api-cards block element
  */
 export default async function decorate(block) {
-  // 1. Extract the API URL authored in the Google Doc table
   const authoredLink = block.querySelector('a');
   const apiUrl = authoredLink ? authoredLink.href : block.textContent.trim();
 
@@ -37,13 +36,13 @@ export default async function decorate(block) {
     return;
   }
 
-  // 2. Build Search Bar, Cart Summary Bar, and Grid Containers
+  // 1. Build Toolbar (Search + Cart Summary)
   const toolbar = document.createElement('div');
   toolbar.className = 'api-cards-toolbar';
 
   const searchInput = document.createElement('input');
   searchInput.type = 'search';
-  searchInput.className = 'product-search'; // Keeps Header & Footer #search= links working
+  searchInput.className = 'product-search';
   searchInput.placeholder = 'Search products by name or category...';
   searchInput.setAttribute('aria-label', 'Search products');
 
@@ -53,6 +52,11 @@ export default async function decorate(block) {
 
   toolbar.append(searchInput, cartSummary);
 
+  // 2. Build Dedicated Cart Items Panel (with Remove & Clear Cart)
+  const cartPanel = document.createElement('div');
+  cartPanel.className = 'api-cards-cart-panel';
+
+  // 3. Build Product Grid
   const list = document.createElement('ul');
   list.className = 'api-cards-grid';
 
@@ -61,15 +65,105 @@ export default async function decorate(block) {
   loading.textContent = 'Loading live products...';
   list.append(loading);
 
-  block.replaceChildren(toolbar, list);
+  block.replaceChildren(toolbar, cartPanel, list);
 
   let allProducts = [];
 
-  const updateCartSummary = () => {
+  const renderCartSection = () => {
     const cart = getCart();
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
     cartSummary.textContent = `Cart: ${totalItems} ${totalItems === 1 ? 'item' : 'items'} | Total: ${formatMoney(totalPrice)}`;
+
+    cartPanel.textContent = '';
+
+    if (!cart.length) {
+      const emptyMsg = document.createElement('p');
+      emptyMsg.className = 'api-cards-cart-empty';
+      emptyMsg.textContent = 'Your cart is empty.';
+      cartPanel.append(emptyMsg);
+      return;
+    }
+
+    const panelHeader = document.createElement('div');
+    panelHeader.className = 'api-cards-cart-header';
+
+    const panelTitle = document.createElement('h3');
+    panelTitle.textContent = `Selected Cart Items (${totalItems})`;
+
+    const clearBtn = document.createElement('button');
+    clearBtn.type = 'button';
+    clearBtn.className = 'api-cards-clear-btn';
+    clearBtn.dataset.action = 'clear';
+    clearBtn.textContent = 'Clear Cart';
+
+    panelHeader.append(panelTitle, clearBtn);
+
+    const cartList = document.createElement('ul');
+    cartList.className = 'api-cards-cart-list';
+
+    cart.forEach((item) => {
+      const row = document.createElement('li');
+      row.className = 'api-cards-cart-row';
+
+      const info = document.createElement('div');
+      info.className = 'api-cards-cart-item-info';
+
+      if (item.image) {
+        const thumb = document.createElement('img');
+        thumb.src = item.image;
+        thumb.alt = item.name;
+        thumb.width = 44;
+        thumb.height = 44;
+        info.append(thumb);
+      }
+
+      const textWrap = document.createElement('div');
+      const itemName = document.createElement('strong');
+      itemName.textContent = item.name;
+
+      const itemMeta = document.createElement('span');
+      itemMeta.textContent = `${formatMoney(item.price)} × ${item.quantity} = ${formatMoney(item.price * item.quantity)}`;
+
+      textWrap.append(itemName, itemMeta);
+      info.append(textWrap);
+
+      const rowActions = document.createElement('div');
+      rowActions.className = 'api-cards-cart-row-actions';
+
+      const decBtn = document.createElement('button');
+      decBtn.type = 'button';
+      decBtn.className = 'api-cards-mini-btn';
+      decBtn.dataset.action = 'decrease';
+      decBtn.dataset.id = String(item.id);
+      decBtn.setAttribute('aria-label', `Decrease quantity of ${item.name}`);
+      decBtn.textContent = '−';
+
+      const qtyBadge = document.createElement('span');
+      qtyBadge.className = 'api-cards-mini-qty';
+      qtyBadge.textContent = String(item.quantity);
+
+      const incBtn = document.createElement('button');
+      incBtn.type = 'button';
+      incBtn.className = 'api-cards-mini-btn';
+      incBtn.dataset.action = 'increase';
+      incBtn.dataset.id = String(item.id);
+      incBtn.setAttribute('aria-label', `Increase quantity of ${item.name}`);
+      incBtn.textContent = '+';
+
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'api-cards-remove-btn';
+      removeBtn.dataset.action = 'remove';
+      removeBtn.dataset.id = String(item.id);
+      removeBtn.textContent = 'Remove';
+
+      rowActions.append(decBtn, qtyBadge, incBtn, removeBtn);
+      row.append(info, rowActions);
+      cartList.append(row);
+    });
+
+    cartPanel.append(panelHeader, cartList);
   };
 
   const renderProducts = (products) => {
@@ -182,7 +276,7 @@ export default async function decorate(block) {
     ));
   };
 
-  // 3. Fetch Live Products from Authored Endpoint
+  // 4. Fetch Live Products
   try {
     const response = await fetch(apiUrl);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -190,7 +284,7 @@ export default async function decorate(block) {
     const data = await response.json();
     allProducts = Array.isArray(data.products) ? data.products : [];
 
-    updateCartSummary();
+    renderCartSection();
     renderProducts(getFilteredProducts());
   } catch (error) {
     list.textContent = '';
@@ -201,28 +295,37 @@ export default async function decorate(block) {
     return;
   }
 
-  // 4. Live Search Filtering
+  // 5. Search Input Listener
   searchInput.addEventListener('input', () => {
     renderProducts(getFilteredProducts());
   });
 
-  // 5. Event Delegation for Add / Increase / Decrease Cart Actions
-  list.addEventListener('click', (event) => {
+  // 6. Single Delegated Listener for Both Cart Panel & Product Grid
+  block.addEventListener('click', (event) => {
     const button = event.target.closest('button[data-action]');
     if (!button) return;
 
-    const productId = Number(button.dataset.id);
     const { action } = button.dataset;
-    const product = allProducts.find((item) => item.id === productId);
-    if (!product) return;
 
+    if (action === 'clear') {
+      saveCart([]);
+      renderCartSection();
+      renderProducts(getFilteredProducts());
+      return;
+    }
+
+    const productId = Number(button.dataset.id);
     const cart = getCart();
     const index = cart.findIndex((item) => item.id === productId);
 
-    if (action === 'add' || action === 'increase') {
+    if (action === 'remove') {
+      if (index > -1) cart.splice(index, 1);
+    } else if (action === 'add' || action === 'increase') {
       if (index > -1) {
         cart[index].quantity += 1;
       } else {
+        const product = allProducts.find((item) => item.id === productId);
+        if (!product) return;
         cart.push({
           id: product.id,
           name: product.title,
@@ -240,13 +343,13 @@ export default async function decorate(block) {
     }
 
     saveCart(cart);
-    updateCartSummary();
+    renderCartSection();
     renderProducts(getFilteredProducts());
   });
 
-  // 6. Stay Synced if User Removes Items from the Header Cart Drawer
+  // 7. Keep Synced with Header Drawer
   window.addEventListener('cart:updated', () => {
-    updateCartSummary();
+    renderCartSection();
     renderProducts(getFilteredProducts());
   });
 }
