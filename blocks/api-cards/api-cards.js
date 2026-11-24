@@ -46,6 +46,11 @@ export default async function decorate(block) {
   searchInput.placeholder = 'Search products by name or category...';
   searchInput.setAttribute('aria-label', 'Search products');
 
+  if (window.location.hash.startsWith('#search=')) {
+    const rawTerm = decodeURIComponent(window.location.hash.replace('#search=', '')).replace(/-/g, ' ').trim();
+    searchInput.value = rawTerm.toLowerCase() === 'all' ? '' : rawTerm;
+  }
+
   const cartSummary = document.createElement('div');
   cartSummary.className = 'api-cards-cart-summary';
   cartSummary.setAttribute('aria-live', 'polite');
