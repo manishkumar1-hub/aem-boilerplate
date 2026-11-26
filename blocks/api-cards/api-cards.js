@@ -22,9 +22,16 @@ function formatMoney(amount) {
   return `$${Number(amount || 0).toFixed(2)}`;
 }
 
+function formatCategoryLabel(slug) {
+  return slug
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 /**
- * API Cards Block - Fetches products dynamically from an authored API URL
- * with live search filtering, cart items panel, and header cart sync.
+ * API Cards Block - Dynamic catalog with URL state sync, category pills,
+ * sorting, <dialog> quick-view modal, cart panel, and chaos debug flags.
  * @param {Element} block The api-cards block element
  */
 export default async function decorate(block) {
@@ -36,43 +43,118 @@ export default async function decorate(block) {
     return;
   }
 
-  // 1. Build Toolbar (Search + Cart Summary)
+  // Read initial URL state (?category=beauty&sort=price-asc&q=mascara&debug=slow)
+  const initialParams = new URLSearchParams(window.location.search);
+  const debugMode = initialParams.get('debug'); // 'slow' | 'error' | null
+  let activeCategory = initialParams.get('category') || 'all';
+  let activeSort = initialParams.get('sort') || 'default';
+
+  // 1. Build Toolbar (Search + Sort + Cart Summary)
   const toolbar = document.createElement('div');
   toolbar.className = 'api-cards-toolbar';
 
+  const controlsLeft = document.createElement('div');
+  controlsLeft.className = 'api-cards-controls-left';
+
   const searchInput = document.createElement('input');
   searchInput.type = 'search';
-  searchInput.className = 'product-search';
+  searchInput.className = 'product-search'; // Preserves Header & Footer #search= integration
   searchInput.placeholder = 'Search products by name or category...';
   searchInput.setAttribute('aria-label', 'Search products');
 
-  if (window.location.hash.startsWith('#search=')) {
+  if (initialParams.get('q')) {
+    searchInput.value = initialParams.get('q');
+  } else if (window.location.hash.startsWith('#search=')) {
     const rawTerm = decodeURIComponent(window.location.hash.replace('#search=', '')).replace(/-/g, ' ').trim();
     searchInput.value = rawTerm.toLowerCase() === 'all' ? '' : rawTerm;
   }
+
+  const sortSelect = document.createElement('select');
+  sortSelect.className = 'api-cards-sort';
+  sortSelect.setAttribute('aria-label', 'Sort products');
+  [
+    { value: 'default', label: 'Sort: Featured' },
+    { value: 'price-asc', label: 'Price: Low to High' },
+    { value: 'price-desc', label: 'Price: High to Low' },
+    { value: 'rating-desc', label: 'Highest Rated' },
+  ].forEach(({ value, label }) => {
+    const option = document.createElement('option');
+    option.value = value;
+    option.textContent = label;
+    if (value === activeSort) option.selected = true;
+    sortSelect.append(option);
+  });
+
+  controlsLeft.append(searchInput, sortSelect);
 
   const cartSummary = document.createElement('div');
   cartSummary.className = 'api-cards-cart-summary';
   cartSummary.setAttribute('aria-live', 'polite');
 
-  toolbar.append(searchInput, cartSummary);
+  toolbar.append(controlsLeft, cartSummary);
 
-  // 2. Build Dedicated Cart Items Panel (with Remove & Clear Cart)
+  // 2. Dynamic Category Pills Bar (Populated from API response)
+  const categoryBar = document.createElement('div');
+  categoryBar.className = 'api-cards-categories';
+  categoryBar.setAttribute('role', 'group');
+  categoryBar.setAttribute('aria-label', 'Filter by product category');
+
+  // 3. Dedicated Cart Items Panel
   const cartPanel = document.createElement('div');
   cartPanel.className = 'api-cards-cart-panel';
 
-  // 3. Build Product Grid
+  // 4. Product Grid
   const list = document.createElement('ul');
   list.className = 'api-cards-grid';
 
   const loading = document.createElement('li');
   loading.className = 'api-cards-status';
-  loading.textContent = 'Loading live products...';
+  loading.textContent = debugMode === 'slow'
+    ? 'Simulating slow network (2.5s)...'
+    : 'Loading live products...';
   list.append(loading);
 
-  block.replaceChildren(toolbar, cartPanel, list);
+  // 5. Native HTML5 <dialog> Quick-View Modal
+  const modal = document.createElement('dialog');
+  modal.className = 'api-cards-modal';
+  modal.setAttribute('aria-labelledby', 'quick-view-title');
+
+  block.replaceChildren(toolbar, categoryBar, cartPanel, list, modal);
 
   let allProducts = [];
+
+  const syncUrlState = () => {
+    const url = new URL(window.location.href);
+    const query = searchInput.value.trim();
+
+    if (query) url.searchParams.set('q', query);
+    else url.searchParams.delete('q');
+
+    if (activeCategory && activeCategory !== 'all') url.searchParams.set('category', activeCategory);
+    else url.searchParams.delete('category');
+
+    if (activeSort && activeSort !== 'default') url.searchParams.set('sort', activeSort);
+    else url.searchParams.delete('sort');
+
+    window.history.replaceState({}, '', url);
+  };
+
+  const renderCategoryPills = () => {
+    categoryBar.textContent = '';
+    const categories = ['all', ...new Set(allProducts.map((p) => p.category).filter(Boolean))];
+
+    categories.forEach((cat) => {
+      const pill = document.createElement('button');
+      pill.type = 'button';
+      pill.className = 'api-cards-pill';
+      pill.dataset.category = cat;
+      const isSelected = activeCategory === cat;
+      pill.classList.toggle('is-active', isSelected);
+      pill.setAttribute('aria-pressed', String(isSelected));
+      pill.textContent = cat === 'all' ? 'All Products' : formatCategoryLabel(cat);
+      categoryBar.append(pill);
+    });
+  };
 
   const renderCartSection = () => {
     const cart = getCart();
@@ -171,13 +253,33 @@ export default async function decorate(block) {
     cartPanel.append(panelHeader, cartList);
   };
 
+  const getFilteredAndSortedProducts = () => {
+    const query = searchInput.value.toLowerCase().trim();
+
+    const filtered = allProducts.filter((product) => {
+      const matchesCategory = activeCategory === 'all' || product.category === activeCategory;
+      const matchesQuery = !query
+        || product.title.toLowerCase().includes(query)
+        || (product.category && product.category.toLowerCase().includes(query))
+        || (product.description && product.description.toLowerCase().includes(query));
+      return matchesCategory && matchesQuery;
+    });
+
+    const sorted = [...filtered];
+    if (activeSort === 'price-asc') sorted.sort((a, b) => a.price - b.price);
+    else if (activeSort === 'price-desc') sorted.sort((a, b) => b.price - a.price);
+    else if (activeSort === 'rating-desc') sorted.sort((a, b) => b.rating - a.rating);
+
+    return sorted;
+  };
+
   const renderProducts = (products) => {
     list.textContent = '';
 
     if (!products.length) {
       const empty = document.createElement('li');
       empty.className = 'api-cards-status';
-      empty.textContent = 'No products matched your search.';
+      empty.textContent = 'No products matched your filter criteria.';
       list.append(empty);
       return;
     }
@@ -189,8 +291,12 @@ export default async function decorate(block) {
       const card = document.createElement('li');
       card.className = 'api-cards-item';
 
-      const imageWrapper = document.createElement('div');
-      imageWrapper.className = 'api-cards-image';
+      const imageBtn = document.createElement('button');
+      imageBtn.type = 'button';
+      imageBtn.className = 'api-cards-image-btn';
+      imageBtn.dataset.action = 'quick-view';
+      imageBtn.dataset.id = String(product.id);
+      imageBtn.setAttribute('aria-label', `Quick view ${product.title}`);
 
       const image = document.createElement('img');
       image.src = product.thumbnail;
@@ -198,13 +304,19 @@ export default async function decorate(block) {
       image.loading = 'lazy';
       image.width = 240;
       image.height = 180;
-      imageWrapper.append(image);
+      imageBtn.append(image);
 
       const content = document.createElement('div');
       content.className = 'api-cards-content';
 
       const title = document.createElement('h3');
-      title.textContent = product.title;
+      const titleBtn = document.createElement('button');
+      titleBtn.type = 'button';
+      titleBtn.className = 'api-cards-title-btn';
+      titleBtn.dataset.action = 'quick-view';
+      titleBtn.dataset.id = String(product.id);
+      titleBtn.textContent = product.title;
+      title.append(titleBtn);
 
       const description = document.createElement('p');
       description.className = 'api-cards-desc';
@@ -264,48 +376,146 @@ export default async function decorate(block) {
       }
 
       content.append(title, description, metaRow, actions);
-      card.append(imageWrapper, content);
+      card.append(imageBtn, content);
       fragment.append(card);
     });
 
     list.append(fragment);
   };
 
-  const getFilteredProducts = () => {
-    const query = searchInput.value.toLowerCase().trim();
-    if (!query) return allProducts;
-    return allProducts.filter((product) => (
-      product.title.toLowerCase().includes(query)
-      || (product.category && product.category.toLowerCase().includes(query))
-      || (product.description && product.description.toLowerCase().includes(query))
-    ));
+  const openQuickView = (product) => {
+    modal.textContent = '';
+
+    const modalCard = document.createElement('div');
+    modalCard.className = 'api-cards-modal-inner';
+
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'api-cards-modal-close';
+    closeBtn.setAttribute('aria-label', 'Close product details');
+    closeBtn.textContent = '×';
+    closeBtn.addEventListener('click', () => modal.close());
+
+    const body = document.createElement('div');
+    body.className = 'api-cards-modal-body';
+
+    const img = document.createElement('img');
+    img.src = product.images?.[0] || product.thumbnail;
+    img.alt = product.title;
+    img.width = 280;
+    img.height = 280;
+
+    const details = document.createElement('div');
+    details.className = 'api-cards-modal-details';
+
+    const badge = document.createElement('span');
+    badge.className = 'api-cards-modal-badge';
+    badge.textContent = `${formatCategoryLabel(product.category || 'product')} • ${product.stock > 0 ? `In Stock (${product.stock})` : 'Out of Stock'}`;
+
+    const heading = document.createElement('h2');
+    heading.id = 'quick-view-title';
+    heading.textContent = product.title;
+
+    const desc = document.createElement('p');
+    desc.textContent = product.description;
+
+    const priceLine = document.createElement('div');
+    priceLine.className = 'api-cards-modal-price';
+    priceLine.textContent = `${formatMoney(product.price)} `;
+    if (product.discountPercentage) {
+      const discount = document.createElement('span');
+      discount.textContent = `(${Math.round(product.discountPercentage)}% OFF)`;
+      priceLine.append(discount);
+    }
+
+    const modalAddBtn = document.createElement('button');
+    modalAddBtn.type = 'button';
+    modalAddBtn.className = 'api-cards-add-btn';
+    modalAddBtn.dataset.action = 'add';
+    modalAddBtn.dataset.id = String(product.id);
+    modalAddBtn.textContent = 'Add to Cart';
+
+    details.append(badge, heading, desc, priceLine, modalAddBtn);
+    body.append(img, details);
+    modalCard.append(closeBtn, body);
+    modal.append(modalCard);
+
+    modal.showModal();
   };
 
-  // 4. Fetch Live Products
+  // Close modal when clicking the backdrop outside modalCard
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) modal.close();
+  });
+
+  // 6. Fetch Live Products (with Performance Marks & Chaos Debug Support)
   try {
+    performance.mark('api-cards-fetch-start');
+
+    if (debugMode === 'error') {
+      throw new Error('Simulated 500 API outage via ?debug=error');
+    }
+
+    if (debugMode === 'slow') {
+      await new Promise((resolve) => { setTimeout(resolve, 2500); });
+    }
+
     const response = await fetch(apiUrl);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
     const data = await response.json();
     allProducts = Array.isArray(data.products) ? data.products : [];
 
+    performance.mark('api-cards-fetch-end');
+    performance.measure('API Cards Network Fetch', 'api-cards-fetch-start', 'api-cards-fetch-end');
+
+    renderCategoryPills();
     renderCartSection();
-    renderProducts(getFilteredProducts());
+    renderProducts(getFilteredAndSortedProducts());
   } catch (error) {
     list.textContent = '';
     const errMessage = document.createElement('li');
-    errMessage.className = 'api-cards-status';
-    errMessage.textContent = 'Unable to load products. Please try again later.';
+    errMessage.className = 'api-cards-status api-cards-error';
+    errMessage.textContent = `Unable to load products (${error.message}). Remove ?debug=error or try again.`;
     list.append(errMessage);
     return;
   }
 
-  // 5. Search Input Listener
+  // 7. Search, Category Pill & Sort Listeners
   searchInput.addEventListener('input', () => {
-    renderProducts(getFilteredProducts());
+    syncUrlState();
+    renderProducts(getFilteredAndSortedProducts());
   });
 
-  // 6. Single Delegated Listener for Both Cart Panel & Product Grid
+  sortSelect.addEventListener('change', () => {
+    activeSort = sortSelect.value;
+    syncUrlState();
+    renderProducts(getFilteredAndSortedProducts());
+  });
+
+  categoryBar.addEventListener('click', (event) => {
+    const pill = event.target.closest('button[data-category]');
+    if (!pill) return;
+
+    activeCategory = pill.dataset.category;
+    syncUrlState();
+    renderCategoryPills();
+    renderProducts(getFilteredAndSortedProducts());
+  });
+
+  window.addEventListener('hashchange', () => {
+    if (window.location.hash.startsWith('#search=')) {
+      const rawTerm = decodeURIComponent(window.location.hash.replace('#search=', '')).replace(/-/g, ' ').trim();
+      searchInput.value = rawTerm.toLowerCase() === 'all' ? '' : rawTerm;
+      activeCategory = 'all';
+      syncUrlState();
+      renderCategoryPills();
+      renderProducts(getFilteredAndSortedProducts());
+      searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
+
+  // 8. Single Delegated Listener for Cart Actions & Quick-View Modal
   block.addEventListener('click', (event) => {
     const button = event.target.closest('button[data-action]');
     if (!button) return;
@@ -315,11 +525,18 @@ export default async function decorate(block) {
     if (action === 'clear') {
       saveCart([]);
       renderCartSection();
-      renderProducts(getFilteredProducts());
+      renderProducts(getFilteredAndSortedProducts());
       return;
     }
 
     const productId = Number(button.dataset.id);
+    const product = allProducts.find((item) => item.id === productId);
+
+    if (action === 'quick-view') {
+      if (product) openQuickView(product);
+      return;
+    }
+
     const cart = getCart();
     const index = cart.findIndex((item) => item.id === productId);
 
@@ -328,9 +545,7 @@ export default async function decorate(block) {
     } else if (action === 'add' || action === 'increase') {
       if (index > -1) {
         cart[index].quantity += 1;
-      } else {
-        const product = allProducts.find((item) => item.id === productId);
-        if (!product) return;
+      } else if (product) {
         cart.push({
           id: product.id,
           name: product.title,
@@ -338,6 +553,10 @@ export default async function decorate(block) {
           image: product.thumbnail,
           quantity: 1,
         });
+      }
+      if (modal.open && button.closest('.api-cards-modal')) {
+        button.textContent = 'Added to Cart ✓';
+        setTimeout(() => modal.close(), 500);
       }
     } else if (action === 'decrease' && index > -1) {
       if (cart[index].quantity > 1) {
@@ -349,12 +568,11 @@ export default async function decorate(block) {
 
     saveCart(cart);
     renderCartSection();
-    renderProducts(getFilteredProducts());
+    renderProducts(getFilteredAndSortedProducts());
   });
 
-  // 7. Keep Synced with Header Drawer
   window.addEventListener('cart:updated', () => {
     renderCartSection();
-    renderProducts(getFilteredProducts());
+    renderProducts(getFilteredAndSortedProducts());
   });
 }

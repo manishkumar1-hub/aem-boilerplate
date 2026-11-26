@@ -364,3 +364,201 @@
 .api-cards .api-cards-remove-btn:hover {
     background-color: #b91c1c;
 }
+/* ========================================
+   SORT SELECT, CATEGORY PILLS & QUICK-VIEW MODAL
+======================================== */
+
+.api-cards .api-cards-controls-left {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.api-cards .api-cards-sort {
+    padding: 12px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #162844;
+    background-color: #ffffff;
+    cursor: pointer;
+}
+
+.api-cards .api-cards-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.api-cards .api-cards-pill {
+    padding: 9px 16px;
+    min-height: 38px;
+    border: 1px solid #cbd5e1;
+    border-radius: 999px;
+    background-color: #ffffff;
+    color: #162844;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.api-cards .api-cards-pill:hover {
+    border-color: #162844;
+    background-color: #f1f5f9;
+}
+
+.api-cards .api-cards-pill.is-active {
+    background-color: #162844;
+    border-color: #162844;
+    color: #ffffff;
+}
+
+/* Clickable Image & Title Triggers */
+.api-cards .api-cards-image-btn {
+    display: block;
+    width: 100%;
+    background-color: #f8fafc;
+    border: none;
+    padding: 14px;
+    cursor: pointer;
+    line-height: 0;
+}
+
+.api-cards .api-cards-image-btn img {
+    width: 100%;
+    height: 190px;
+    object-fit: contain;
+}
+
+.api-cards .api-cards-title-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.api-cards .api-cards-title-btn:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+
+.api-cards .api-cards-error {
+    border-color: #fca5a5;
+    background-color: #fef2f2;
+    color: #b91c1c;
+    font-weight: 600;
+}
+
+/* Native HTML5 <dialog> Quick-View Modal */
+.api-cards .api-cards-modal {
+    border: none;
+    border-radius: 14px;
+    padding: 0;
+    max-width: 680px;
+    width: 92vw;
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.35);
+}
+
+.api-cards .api-cards-modal::backdrop {
+    background-color: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(3px);
+}
+
+.api-cards .api-cards-modal-inner {
+    position: relative;
+    padding: 28px 24px;
+}
+
+.api-cards .api-cards-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background-color: #f1f5f9;
+    color: #162844;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.api-cards .api-cards-modal-close:hover {
+    background-color: #e2e8f0;
+}
+
+.api-cards .api-cards-modal-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    align-items: center;
+}
+
+.api-cards .api-cards-modal-body img {
+    width: 100%;
+    max-height: 240px;
+    object-fit: contain;
+    background-color: #f8fafc;
+    border-radius: 10px;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+.api-cards .api-cards-modal-badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #162844;
+    background-color: #fef3c7;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+}
+
+.api-cards .api-cards-modal-details h2 {
+    margin: 0 0 10px;
+    font-size: 22px;
+    color: #162844;
+}
+
+.api-cards .api-cards-modal-details p {
+    margin: 0 0 16px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #475569;
+}
+
+.api-cards .api-cards-modal-price {
+    font-size: 22px;
+    font-weight: 800;
+    color: #15803d;
+    margin-bottom: 16px;
+}
+
+.api-cards .api-cards-modal-price span {
+    font-size: 14px;
+    font-weight: 600;
+    color: #b45309;
+}
+
+@media (min-width: 600px) {
+    .api-cards .api-cards-controls-left {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .api-cards .api-cards-modal-body {
+        grid-template-columns: 240px 1fr;
+    }
+}
